@@ -1,0 +1,15 @@
+services:
+  ntf-db:
+    image: postgres:17.5
+    container_name: ntf-db
+    ports:
+      - "5430:5432"
+    environment:
+      POSTGRES_USER: ntf_user
+      POSTGRES_PASSWORD: ntf_password
+      POSTGRES_DB: ntf_db
+    volumes:
+      - ntf_db_data:/var/lib/postgresql/data
+volumes:
+  ntf_db_data:
+    driver: local
