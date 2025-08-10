@@ -6,9 +6,12 @@
   "scripts": {
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.js",
     "deploy:localhost": "npx hardhat run scripts/deploy.js --network localhost",
+    "deploy:test": "npx hardhat run scripts/deploy.js --network sepolia",
+    "deploy:mainnet": "npx hardhat run scripts/deploy.js --network mainnet",
     "verify:localhost": "npx hardhat verify --network localhost",
+    "verify:test": "npx hardhat run scripts/verify-etherscan.js --network sepolia",
+    "verify:mainnet": "npx hardhat verify --network mainnet",
     "node": "npx hardhat node",
     "clean": "npx hardhat clean"
   },

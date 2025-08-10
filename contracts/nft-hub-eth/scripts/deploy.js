@@ -2,6 +2,10 @@
 import hre from "hardhat";
 const { ethers } = hre;
 
+import {config} from "dotenv";
+
+config()
+
 async function main() {
   console.log("Deploying NFTHub contract...");
 
