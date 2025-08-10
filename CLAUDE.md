@@ -11,7 +11,7 @@ NFT Hub is a Web3 application consisting of 3 interconnected components that all
 This is a monorepo with the following structure:
 - `apps/frontend/` - React frontend application
 - `apps/backend/` - Nest.js backend API server
-- `contracts/` - Solidity smart contracts
+- `contracts/` -  Smart contracts(Solidity)
 - `packages/` - Shared packages and utilities
 - `docker-compose.yaml` - PostgreSQL database (port 5430)
 

@@ -17,16 +17,16 @@ contract NFTHub is ERC721, Ownable, ReentrancyGuard, Pausable {
     mapping(uint256 => string) public tokenURIs;
     
     string[10] public predefinedMetadataURIs = [
-        "ipfs://QmPlaceholderHash/metadata1.json",
-        "ipfs://QmPlaceholderHash/metadata2.json",
-        "ipfs://QmPlaceholderHash/metadata3.json",
-        "ipfs://QmPlaceholderHash/metadata4.json",
-        "ipfs://QmPlaceholderHash/metadata5.json",
-        "ipfs://QmPlaceholderHash/metadata6.json",
-        "ipfs://QmPlaceholderHash/metadata7.json",
-        "ipfs://QmPlaceholderHash/metadata8.json",
-        "ipfs://QmPlaceholderHash/metadata9.json",
-        "ipfs://QmPlaceholderHash/metadata10.json"
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq"
     ];
     
     event UserRegistered(address indexed user, uint256 timestamp);

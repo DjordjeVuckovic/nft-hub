@@ -8,6 +8,7 @@
     "compile": "npx hardhat compile",
     "deploy": "npx hardhat run scripts/deploy.js",
     "deploy:localhost": "npx hardhat run scripts/deploy.js --network localhost",
+    "verify:localhost": "npx hardhat verify --network localhost",
     "node": "npx hardhat node",
     "clean": "npx hardhat clean"
   },
@@ -20,6 +21,7 @@
     "hardhat": "^2.26.2"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.4.0"
+    "@openzeppelin/contracts": "^5.4.0",
+    "dotenv": "^17.2.1"
   }
 }
