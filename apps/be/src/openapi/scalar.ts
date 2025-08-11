@@ -13,7 +13,7 @@ export const configureScalar = (app: INestApplication) => {
 
     const swaggerDoc = SwaggerModule.createDocument(app, doc)
     app.use(
-        '/reference',
+        '/scalar',
         apiReference({
             theme: 'elysiajs',
             darkMode: true,

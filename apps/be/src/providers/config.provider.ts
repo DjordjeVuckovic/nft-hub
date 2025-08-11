@@ -15,18 +15,27 @@ export type IpfsConfig = {
     groupId: string;
 }
 
+export type EthConfig = {
+	rpcUrl: string;
+	wsUrl: string;
+	contractAddress: string;
+}
+
 export type AppConfig = {
     port: number;
     dbConfig: DbConfig;
     ipfsConfig: IpfsConfig;
     authConfig: AuthConfig;
+	ethConfig: EthConfig;
 }
 
+export declare const CONFIG_PROVIDER = 'CONFIG';
+
 export const ConfigProvider = {
-    provide: 'CONFIG',
+    provide: CONFIG_PROVIDER,
     useFactory: (): AppConfig => {
         configDotenv();
-        
+
         return {
             port: parseInt(process.env.PORT || '3000', 10),
             dbConfig: {
@@ -40,7 +49,12 @@ export const ConfigProvider = {
             },
             authConfig: {
                 jwtSecret: process.env.JWT_SECRET || 'supersecretkey'
-            }
+            },
+			ethConfig: {
+				rpcUrl: process.env.ETH_RPC_URL || 'https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY',
+				wsUrl: process.env.ETH_WS_URL || 'wss://mainnet.infura.io/ws/v3/YOUR_INFURA_API_KEY',
+				contractAddress: process.env.ETH_CONTRACT_ADDRESS || '0xYourContractAddress'
+			}
         };
     },
 };
