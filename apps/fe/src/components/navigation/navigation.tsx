@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ModeToggle } from '@/components/theme/mode-toggle'
+import { WalletButton } from '@/components/wallet/WalletButton'
+import { NetworkSelector } from '@/components/wallet/NetworkSelector'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,10 +11,12 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils"
-import { Wallet, Home, Image, UserPlus, Plus } from 'lucide-react'
+import { Home, Image, UserPlus, Plus } from 'lucide-react'
+import { useWallet } from '@/hooks/useWallet'
 
 export default function Navigation() {
   const location = useLocation()
+  const { isConnected } = useWallet()
   
   const isActive = (path: string) => {
     return location.pathname === path
@@ -131,14 +135,15 @@ export default function Navigation() {
 
           <div className="flex items-center space-x-4">
             <div className="hidden sm:flex items-center space-x-2">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-muted-foreground">Not Connected</span>
+              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500 animate-pulse'}`}></div>
+              <span className="text-sm text-muted-foreground">
+                {isConnected ? 'Connected' : 'Not Connected'}
+              </span>
             </div>
             
-            <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2">
-              <Wallet className="mr-2 h-4 w-4" />
-              Connect Wallet
-            </button>
+            <NetworkSelector />
+            
+            <WalletButton />
             
             <ModeToggle />
           </div>

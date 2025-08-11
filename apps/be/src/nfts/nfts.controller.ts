@@ -18,6 +18,9 @@ export class NftsController {
 
 	@Get('owner/:address')
 	async getNFTsByOwner(@Param('address') address: string) {
+		if (!address) {
+			throw new Error('Address parameter is required');
+		}
 		return this.nftsService.getNFTsByOwner(address);
 	}
 

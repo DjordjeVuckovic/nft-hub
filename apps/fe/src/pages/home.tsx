@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Card from '../components/ui/card'
 
 export default function Home() {
   return (
@@ -15,36 +16,39 @@ export default function Home() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          <div className="bg-card border border-border rounded-lg p-6 hover:bg-card/80 transition-colors">
-            <h3 className="text-xl font-semibold mb-3 text-card-foreground">Connect Wallet</h3>
-            <p className="text-muted-foreground mb-4">Connect your Web3 wallet to get started</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 items-stretch">
+          <Card
+            title="Connect Wallet"
+            description="Connect your Web3 wallet to get started"
+          >
             <button className="w-full bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
               Connect Wallet
             </button>
-          </div>
+          </Card>
 
-          <div className="bg-card border border-border rounded-lg p-6 hover:bg-card/80 transition-colors">
-            <h3 className="text-xl font-semibold mb-3 text-card-foreground">Register</h3>
-            <p className="text-muted-foreground mb-4">Register as a user to mint NFTs</p>
+          <Card
+            title="Register"
+            description="Register as a user to mint NFTs"
+          >
             <Link 
               to="/register"
               className="block w-full bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors text-center"
             >
               Register
             </Link>
-          </div>
+          </Card>
 
-          <div className="bg-card border border-border rounded-lg p-6 hover:bg-card/80 transition-colors">
-            <h3 className="text-xl font-semibold mb-3 text-card-foreground">Mint NFT</h3>
-            <p className="text-muted-foreground mb-4">Create your unique NFT on the blockchain</p>
+          <Card
+            title="Mint NFT"
+            description="Create your unique NFT on the blockchain"
+          >
             <Link 
               to="/mint"
               className="block w-full bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors text-center"
             >
               Mint NFT
             </Link>
-          </div>
+          </Card>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
