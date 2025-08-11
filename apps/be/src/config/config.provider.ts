@@ -1,5 +1,3 @@
-import { config as configDotenv } from 'dotenv';
-
 export type DbConfig = {
     uri: string;
     options: {}
@@ -29,7 +27,9 @@ export type AppConfig = {
 	ethConfig: EthConfig;
 }
 
-export declare const CONFIG_PROVIDER = 'CONFIG';
+import { config as configDotenv } from 'dotenv';
+
+export const CONFIG_PROVIDER = 'CONFIG';
 
 export const ConfigProvider = {
     provide: CONFIG_PROVIDER,

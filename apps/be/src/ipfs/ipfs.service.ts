@@ -1,6 +1,7 @@
 import {Injectable, Logger, OnModuleInit, Inject} from '@nestjs/common';
 import {PinataSDK} from 'pinata';
-import type {AppConfig} from '../providers/config.provider';
+import type {AppConfig} from '../config/config.provider';
+import {CONFIG_PROVIDER} from '../config/config.provider';
 import {IpfsUploadResult, NftMetadata, FileUploadMetadata} from "./nft-metadata.types";
 import {PinataUploadBuilder} from './pinata.builder';
 
@@ -9,7 +10,7 @@ export class IpfsService implements OnModuleInit {
 	private readonly logger = new Logger(IpfsService.name);
 	private pinata: PinataSDK;
 
-	constructor(@Inject('CONFIG') private readonly config: AppConfig) {
+	constructor(@Inject(CONFIG_PROVIDER) private readonly config: AppConfig) {
 	}
 
 	async onModuleInit() {

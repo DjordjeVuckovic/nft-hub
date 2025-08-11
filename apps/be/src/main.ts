@@ -1,14 +1,14 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
-import {configureScalar} from "./openapi/scalar";
-import {loadConfig} from "./config";
+import {configScalar} from "./openapi/scalar";
+import { config as configDotenv } from 'dotenv';
 
 async function bootstrap() {
+    configDotenv();
+
     const app = await NestFactory.create(AppModule);
 
-    loadConfig()
-
-    configureScalar(app)
+    configScalar(app)
 
     app.enableCors({
         origin: process.env.CORS_ORIGIN || '*',

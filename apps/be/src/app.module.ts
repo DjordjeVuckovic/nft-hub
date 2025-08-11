@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { IpfsModule } from './ipfs/ipfs.module';
-import { ConfigProvider } from './providers/config.provider';
+import { ConfigModule } from './config/config.module';
 import { EventsModule } from './events/events.module';
 import { NftsModule } from './nfts/nfts.module';
 import { EthModule } from './eth/eth.module';
@@ -10,6 +10,7 @@ import {CacheModule} from "@nestjs/cache-manager";
 
 @Module({
   imports: [
+	  ConfigModule,
 	  IpfsModule,
 	  EventsModule,
 	  NftsModule,
@@ -22,6 +23,6 @@ import {CacheModule} from "@nestjs/cache-manager";
 	  })
   ],
   controllers: [AppController],
-  providers: [AppService, ConfigProvider],
+  providers: [AppService],
 })
 export class AppModule {}
