@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom'
 import StepCard from '../components/ui/step-card.tsx'
 import { Button } from '@/components/ui/button'
-import { WalletButton } from '@/components/wallet/WalletButton'
+import { WalletButton } from '@/components/wallet/wallet-button.tsx'
 import { useWallet } from '@/hooks/useWallet'
+import { useNftHubContract } from '@/hooks/useNftHubContract.ts'
 
 export default function Home() {
   const { isConnected } = useWallet()
+  const { isRegistered } = useNftHubContract()
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -34,10 +37,11 @@ export default function Home() {
             title="Register"
             description="Register as a user to mint NFTs"
             number="0x2"
+            isCompleted={isRegistered}
           >
             <Button asChild variant="secondary" className="w-full">
               <Link to="/register">
-                Register
+                {isRegistered ? 'View Registration' : 'Register'}
               </Link>
             </Button>
           </StepCard>
@@ -47,9 +51,19 @@ export default function Home() {
             description="Create your unique NFT on the blockchain"
             number="0x3"
           >
-            <Button asChild variant="secondary" className="w-full">
-              <Link to="/mint">
-                Mint NFT
+            <Button 
+              asChild 
+              variant="secondary" 
+              className="w-full"
+              disabled={!isConnected || !isRegistered}
+            >
+              <Link to={isConnected && isRegistered ? "/mint" : "#"}>
+                {!isConnected 
+                  ? 'Connect Wallet First' 
+                  : !isRegistered 
+                    ? 'Register First' 
+                    : 'Mint NFT'
+                }
               </Link>
             </Button>
           </StepCard>

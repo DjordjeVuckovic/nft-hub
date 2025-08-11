@@ -11,6 +11,12 @@ interface NFT {
   metadata?: any;
 }
 
+interface AvailableNFT {
+  tokenId: string;
+  metadataURI: string;
+  metadata?: any;
+}
+
 interface CollectionInfo {
   contractAddress: string;
   name: string;
@@ -74,7 +80,7 @@ export class EthService implements OnModuleInit {
 			const nextTokenId = await this.contract.nextTokenId();
 			const nfts: NFT[] = [];
 
-			for (let tokenId = 1; tokenId < Number(nextTokenId); tokenId++) {
+			for (let tokenId = 0; tokenId < Number(nextTokenId); tokenId++) {
 				try {
 					const [owner, tokenURI] = await Promise.all([
 						this.contract.ownerOf(tokenId),
@@ -162,5 +168,75 @@ export class EthService implements OnModuleInit {
 
 	getRpcUrl(): string {
 		return this.config.ethConfig.rpcUrl;
+	}
+
+	async getMintedNFTs(): Promise<NFT[]> {
+		try {
+			const allNFTsData = await this.getAllNFTs();
+			return allNFTsData.nfts;
+		} catch (error) {
+			throw new Error(`Failed to get minted NFTs: ${error.message}`);
+		}
+	}
+
+	async getAvailableToMint(): Promise<{ availableNFTs: AvailableNFT[]; nextTokenId: string }> {
+		try {
+			const [nextTokenId, predefinedURIs] = await Promise.all([
+				this.contract.nextTokenId(),
+				this.contract.getPredefinedMetadataURIs()
+			]);
+
+			const nextId = Number(nextTokenId);
+			const availableNFTs: AvailableNFT[] = [];
+
+			for (let i = 0; i < predefinedURIs.length; i++) {
+				const tokenId = nextId + i;
+				const metadataURI = predefinedURIs[i];
+				
+				if (metadataURI && metadataURI.trim() !== '') {
+					try {
+						const metadata = await this.fetchMetadataFromURI(metadataURI);
+						availableNFTs.push({
+							tokenId: tokenId.toString(),
+							metadataURI,
+							metadata
+						});
+					} catch (metadataError) {
+						this.logger.warn(`Failed to fetch metadata for URI ${metadataURI}:`, metadataError.message);
+						availableNFTs.push({
+							tokenId: tokenId.toString(),
+							metadataURI,
+							metadata: null
+						});
+					}
+				}
+			}
+
+			return {
+				availableNFTs,
+				nextTokenId: nextTokenId.toString()
+			};
+		} catch (error) {
+			throw new Error(`Failed to get available NFTs to mint: ${error.message}`);
+		}
+	}
+
+	private async fetchMetadataFromURI(uri: string): Promise<any> {
+		if (uri.startsWith('ipfs://')) {
+			const ipfsHash = uri.replace('ipfs://', '');
+			const metadataUrl = `${this.config.ipfsConfig.gatewayUrl}/${ipfsHash}`;
+			
+			const response = await fetch(metadataUrl);
+			if (!response.ok) {
+				throw new Error(`Failed to fetch metadata from IPFS: ${response.statusText}`);
+			}
+			return await response.json();
+		}
+		
+		const response = await fetch(uri);
+		if (!response.ok) {
+			throw new Error(`Failed to fetch metadata: ${response.statusText}`);
+		}
+		return await response.json();
 	}
 }

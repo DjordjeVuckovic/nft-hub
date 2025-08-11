@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { ModeToggle } from '@/components/theme/mode-toggle'
-import { WalletButton } from '@/components/wallet/WalletButton'
-import { NetworkSelector } from '@/components/wallet/NetworkSelector'
+import { WalletButton } from '@/components/wallet/wallet-button.tsx'
+import { NetworkSelector } from '@/components/wallet/network-selector.tsx'
 import {
   NavigationMenu,
   NavigationMenuContent,
