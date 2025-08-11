@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom'
-import Card from '../components/ui/card'
+import StepCard from '../components/ui/step-card.tsx'
+import { Button } from '@/components/ui/button'
+import { WalletButton } from '@/components/wallet/WalletButton'
+import { useWallet } from '@/hooks/useWallet'
 
 export default function Home() {
+  const { isConnected } = useWallet()
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -17,38 +21,38 @@ export default function Home() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 items-stretch">
-          <Card
+          <StepCard
             title="Connect Wallet"
             description="Connect your Web3 wallet to get started"
+            number="0x1"
+            isCompleted={isConnected}
           >
-            <button className="w-full bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
-              Connect Wallet
-            </button>
-          </Card>
+            <WalletButton variant="default" size="default" className="w-full" />
+          </StepCard>
 
-          <Card
+          <StepCard
             title="Register"
             description="Register as a user to mint NFTs"
+            number="0x2"
           >
-            <Link 
-              to="/register"
-              className="block w-full bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors text-center"
-            >
-              Register
-            </Link>
-          </Card>
+            <Button asChild variant="secondary" className="w-full">
+              <Link to="/register">
+                Register
+              </Link>
+            </Button>
+          </StepCard>
 
-          <Card
+          <StepCard
             title="Mint NFT"
             description="Create your unique NFT on the blockchain"
+            number="0x3"
           >
-            <Link 
-              to="/mint"
-              className="block w-full bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors text-center"
-            >
-              Mint NFT
-            </Link>
-          </Card>
+            <Button asChild variant="secondary" className="w-full">
+              <Link to="/mint">
+                Mint NFT
+              </Link>
+            </Button>
+          </StepCard>
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
