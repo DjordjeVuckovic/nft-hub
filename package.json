@@ -8,7 +8,7 @@
     "dev:fe": "cd apps/fe && npm run dev",
 		"cp-abi:be": "cd apps/be && mkdir -p ./src/eth/abi && jq '.abi' ../../contracts/nft-hub-eth/artifacts/contracts/NFTHub.sol/NFTHub.json > ./src/eth/abi/nft-hub.abi.json",
 		"cp-abi:fe": "cd apps/fe && mkdir -p ./src/eth/abi && jq '.abi' ../../contracts/nft-hub-eth/artifacts/contracts/NFTHub.sol/NFTHub.json > ./src/eth/abi/nft-hub.abi.json",
-    "cp-meta:ct": "cd contracts/nft-hub-eth && mkdir"
+		"cp-nft-data": "jq '.nfts' ./tools/nft-seeder/assets/seeder-output.json > ./contracts/nft-hub-eth/assets/nft-data.json"
 	},
   "devDependencies": {
     "@types/jest": "^30.0.0",
