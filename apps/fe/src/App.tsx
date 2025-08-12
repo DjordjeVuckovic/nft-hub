@@ -1,7 +1,7 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from "@/components/theme/theme-provider.tsx"
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider } from '@/contexts/auth-context.tsx'
 import Navigation from '@/components/navigation/navigation.tsx'
 import Home from '@/pages/home.tsx'
 import Register from '@/pages/register.tsx'

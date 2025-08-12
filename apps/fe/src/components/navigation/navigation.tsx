@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { ModeToggle } from '@/components/theme/mode-toggle'
+import { ThemeToggle } from '@/components/theme/theme-toggle.tsx'
 import { WalletButton } from '@/components/wallet/wallet-button.tsx'
 import { NetworkSelector } from '@/components/wallet/network-selector.tsx'
 import {
@@ -145,7 +145,7 @@ export default function Navigation() {
             
             <WalletButton />
             
-            <ModeToggle />
+            <ThemeToggle />
           </div>
         </div>
 
