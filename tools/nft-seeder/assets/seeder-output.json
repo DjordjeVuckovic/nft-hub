@@ -1,0 +1,78 @@
+{
+  "timestamp": "2025-08-12T15:25:55.006Z",
+  "totalSeeded": 10,
+  "totalFailed": 0,
+  "nfts": [
+    {
+      "id": 1,
+      "name": "Purple Punk #1",
+      "imageCid": "bafkreibgsyuzo3pzyp6h3fz27vzyssx5aguxxiv5gby5cz7y7dp5yavevm",
+      "metadataCid": "bafkreibu2eqql3uh2uzmukuah5rlme6srt6bsphccwzg5remmr5o4jeyi4",
+      "metadataUri": "ipfs://bafkreibu2eqql3uh2uzmukuah5rlme6srt6bsphccwzg5remmr5o4jeyi4"
+    },
+    {
+      "id": 2,
+      "name": "Winter Hunter #2",
+      "imageCid": "bafybeihwi4pk44khfiyd4m7xla7dfjjk3jgeguuz4cutrcolxpw3ucaamq",
+      "metadataCid": "bafkreiht2rrns4clagbe65z336ak73tme4t45tz7xik4qdwz4gago47gta",
+      "metadataUri": "ipfs://bafkreiht2rrns4clagbe65z336ak73tme4t45tz7xik4qdwz4gago47gta"
+    },
+    {
+      "id": 3,
+      "name": "Cool Punk #3",
+      "imageCid": "bafkreig62ev5imfsjp4rgpz344ev7pqrlrsqtnd5mzzr3efacf67umgscq",
+      "metadataCid": "bafkreibtxn4sbikvj3blzlbvg5vacpgfbhkypwvdy7kdlzjovydkfzfnee",
+      "metadataUri": "ipfs://bafkreibtxn4sbikvj3blzlbvg5vacpgfbhkypwvdy7kdlzjovydkfzfnee"
+    },
+    {
+      "id": 4,
+      "name": "Silver Scholar #4",
+      "imageCid": "bafybeifrsx5a5tywh4af5lah6hcw4eb3i5camp4tpbpa4lfyiyyt3lvo24",
+      "metadataCid": "bafkreigx6av7oqw63o5s343hxlhjlcmn5zq4glhd2x572tmlejl5zwwmpu",
+      "metadataUri": "ipfs://bafkreigx6av7oqw63o5s343hxlhjlcmn5zq4glhd2x572tmlejl5zwwmpu"
+    },
+    {
+      "id": 5,
+      "name": "Retro Gamer #5",
+      "imageCid": "bafkreieoqy6udlrhu7ygslashc7aawc5hbhb6twehw3il2n6n7t7a7o3bi",
+      "metadataCid": "bafkreihqfob2xwlwops44st3ebc2745kp2l655dq54fosezsldaev3jvdm",
+      "metadataUri": "ipfs://bafkreihqfob2xwlwops44st3ebc2745kp2l655dq54fosezsldaev3jvdm"
+    },
+    {
+      "id": 6,
+      "name": "Holiday Penguin #6",
+      "imageCid": "bafkreihusk6nuqffcjfwtguszrli34pk55k4ebgygkhuybntofyhrp6kwu",
+      "metadataCid": "bafkreihz45edueenqq27p7dltsrldzntbrzdikyb4hss3awqe46d65yw2q",
+      "metadataUri": "ipfs://bafkreihz45edueenqq27p7dltsrldzntbrzdikyb4hss3awqe46d65yw2q"
+    },
+    {
+      "id": 7,
+      "name": "Psychedelic Wizard #7",
+      "imageCid": "bafybeig4dexcv2pr4izqudr4f2uouuqilr7hlla54gfbl5mamhp6727r3m",
+      "metadataCid": "bafkreiaxok2vig2mdawbznpquqqkii2bskbwqhm6sxyjajjjwac6e4uu24",
+      "metadataUri": "ipfs://bafkreiaxok2vig2mdawbznpquqqkii2bskbwqhm6sxyjajjjwac6e4uu24"
+    },
+    {
+      "id": 8,
+      "name": "Street Degen #8",
+      "imageCid": "bafybeib2khx7t2awo2rcwzxey5l7siuy7esyydkzuuxjy5lagmwtd3b7z4",
+      "metadataCid": "bafkreibozhjdjffdind4fgnj6asesgesmzownqri6o4lmq5z6mf3n6id5y",
+      "metadataUri": "ipfs://bafkreibozhjdjffdind4fgnj6asesgesmzownqri6o4lmq5z6mf3n6id5y"
+    },
+    {
+      "id": 9,
+      "name": "Bored Ape #9",
+      "imageCid": "bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
+      "metadataCid": "bafkreiblrrsw2k2cuhtsemh3shany6kpnfp3mjezb75sv4qmn4esgh64k4",
+      "metadataUri": "ipfs://bafkreiblrrsw2k2cuhtsemh3shany6kpnfp3mjezb75sv4qmn4esgh64k4"
+    },
+    {
+      "id": 10,
+      "name": "Huddle Penguin #10",
+      "imageCid": "bafkreia7tiwrwngvnsqvcro5fgjumj4hojarfn3o2grtk6ppvi6dr6au3y",
+      "metadataCid": "bafkreibcjfqrfvolukfachdvt6tb4br25x32aw7zmik6z2evmeynf6g5ly",
+      "metadataUri": "ipfs://bafkreibcjfqrfvolukfachdvt6tb4br25x32aw7zmik6z2evmeynf6g5ly"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "name": "Purple Punk #1",
+    "description": "A classic pixelated punk character with vibrant purple hair and minimal accessories. Paying homage to the legendary CryptoPunks collection that started the NFT revolution.",
+    "image": "../assets/imgs/31a788750be470385e26621d05d09d07426cf77c.png",
+    "attributes": [
+      {
+        "trait_type": "Style",
+        "value": "CryptoPunk"
+      },
+      {
+        "trait_type": "Hair",
+        "value": "Purple"
+      },
+      {
+        "trait_type": "Background",
+        "value": "Brown"
+      },
+      {
+        "trait_type": "Accessories",
+        "value": "None"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Rare"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/1",
+    "background_color": "8B4513"
+  },
+  {
+    "id": 2,
+    "name": "Winter Hunter #2",
+    "description": "A mysterious hooded warrior from the frozen lands, wielding ancient weapons and bearing the scars of countless battles. Their identity remains hidden beneath the wolf-fur hood.",
+    "image": "../assets/imgs/38421b4856d30ac79750b48df42668a13cdf3b27.png",
+    "attributes": [
+      {
+        "trait_type": "Style",
+        "value": "Anime"
+      },
+      {
+        "trait_type": "Clothing",
+        "value": "Hooded Coat"
+      },
+      {
+        "trait_type": "Weapon",
+        "value": "Blade"
+      },
+      {
+        "trait_type": "Hood",
+        "value": "Wolf Fur"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Epic"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/2",
+    "background_color": "E0E7ED"
+  },
+  {
+    "id": 3,
+    "name": "Cool Punk #3",
+    "description": "A classic 8-bit punk with dark shades and attitude. This pixelated rebel represents the original crypto culture with minimalist style and maximum swagger.",
+    "image": "../assets/imgs/3c048316737df7d9273b0d542432aa0cc29b8e1e.png",
+    "attributes": [
+      {
+        "trait_type": "Style",
+        "value": "CryptoPunk"
+      },
+      {
+        "trait_type": "Accessories",
+        "value": "Sunglasses"
+      },
+      {
+        "trait_type": "Hair",
+        "value": "Black"
+      },
+      {
+        "trait_type": "Background",
+        "value": "Blue Gray"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Rare"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/3",
+    "background_color": "708090"
+  },
+  {
+    "id": 4,
+    "name": "Silver Scholar #4",
+    "description": "An elegant anime character with striking silver-white hair and refined features. Their contemplative expression and formal attire suggest nobility and wisdom beyond their years.",
+    "image": "../assets/imgs/4b3c65cfd7e0dd09f8c715f2b3eb8cf718bbd406.png",
+    "attributes": [
+      {
+        "trait_type": "Style",
+        "value": "Anime"
+      },
+      {
+        "trait_type": "Hair",
+        "value": "Silver White"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Golden"
+      },
+      {
+        "trait_type": "Expression",
+        "value": "Contemplative"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Legendary"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/4",
+    "background_color": "A9A9A9"
+  },
+  {
+    "id": 5,
+    "name": "Retro Gamer #5",
+    "description": "A nostalgic 8-bit character straight from the golden age of gaming. This pixelated hero brings back memories of classic arcade adventures and side-scrolling quests.",
+    "image": "../assets/imgs/5dcfbdf747a7aec6b15982445e66cbbcebf76fb5.png",
+    "attributes": [
+      {
+        "trait_type": "Style",
+        "value": "8-bit Pixel"
+      },
+      {
+        "trait_type": "Era",
+        "value": "Retro Gaming"
+      },
+      {
+        "trait_type": "Colors",
+        "value": "Classic Palette"
+      },
+      {
+        "trait_type": "Background",
+        "value": "Light Gray"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Common"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/5",
+    "background_color": "F5F5F5"
+  },
+  {
+    "id": 6,
+    "name": "Holiday Penguin #6",
+    "description": "A festive penguin spreading winter cheer with a Santa hat and colorful scarf. Part of the adorable penguin collection that brings joy to the blockchain during the holidays.",
+    "image": "../assets/imgs/62f3bcd970964aca53d4120fb40f16c6e9ebc3c7.png",
+    "attributes": [
+      {
+        "trait_type": "Species",
+        "value": "Penguin"
+      },
+      {
+        "trait_type": "Hat",
+        "value": "Santa Hat"
+      },
+      {
+        "trait_type": "Accessory",
+        "value": "Festive Scarf"
+      },
+      {
+        "trait_type": "Season",
+        "value": "Holiday"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Seasonal"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/6",
+    "background_color": "F4DCC6"
+  },
+  {
+    "id": 7,
+    "name": "Psychedelic Wizard #7",
+    "description": "A trippy, multi-dimensional character bursting with chaotic energy and vibrant colors. This psychedelic wizard bends reality with its surreal appearance and mystical accessories.",
+    "image": "../assets/imgs/9614ed06d9d5d9d99ea28fddecfae5cd0bc4a7cf.png",
+    "attributes": [
+      {
+        "trait_type": "Style",
+        "value": "Psychedelic"
+      },
+      {
+        "trait_type": "Hat",
+        "value": "Wizard Hat"
+      },
+      {
+        "trait_type": "Colors",
+        "value": "Rainbow"
+      },
+      {
+        "trait_type": "Vibe",
+        "value": "Chaotic"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Ultra Rare"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/7",
+    "background_color": "FFD700"
+  },
+  {
+    "id": 8,
+    "name": "Street Degen #8",
+    "description": "A cool street character with golden skin, green shades, and DeGod City swagger. This degen represents the urban side of crypto culture with style and attitude.",
+    "image": "../assets/imgs/d19358cfa7e7fd20068685a223d6ae3ea6efa77b.png",
+    "attributes": [
+      {
+        "trait_type": "Skin",
+        "value": "Golden"
+      },
+      {
+        "trait_type": "Sunglasses",
+        "value": "Green Tint"
+      },
+      {
+        "trait_type": "Hat",
+        "value": "Street Cap"
+      },
+      {
+        "trait_type": "Shirt",
+        "value": "DeGod City"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Legendary"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/8",
+    "background_color": "DEB887"
+  },
+  {
+    "id": 9,
+    "name": "Bored Ape #9",
+    "description": "A classic ape with that signature bored expression and laid-back attitude. This golden-furred member of the yacht club represents the pinnacle of NFT culture and community.",
+    "image": "../assets/imgs/d3757993032cf7c540948a51905b27dbd5b23d6d.png",
+    "attributes": [
+      {
+        "trait_type": "Species",
+        "value": "Ape"
+      },
+      {
+        "trait_type": "Fur",
+        "value": "Golden Brown"
+      },
+      {
+        "trait_type": "Expression",
+        "value": "Bored"
+      },
+      {
+        "trait_type": "Clothing",
+        "value": "Black Shirt"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Epic"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/9",
+    "background_color": "C0C0C0"
+  },
+  {
+    "id": 10,
+    "name": "Huddle Penguin #10",
+    "description": "A cozy penguin from 'The HUDDLE' collection, wearing a warm winter hat and pink sweater. This adorable character embodies the community spirit of penguin NFTs.",
+    "image": "../assets/imgs/e8fddd98f3d1d701d2bce4b32f36036d339e42c1.png",
+    "attributes": [
+      {
+        "trait_type": "Species",
+        "value": "Penguin"
+      },
+      {
+        "trait_type": "Hat",
+        "value": "Winter Beanie"
+      },
+      {
+        "trait_type": "Clothing",
+        "value": "Pink Sweater"
+      },
+      {
+        "trait_type": "Text",
+        "value": "The HUDDLE"
+      },
+      {
+        "trait_type": "Rarity",
+        "value": "Community"
+      }
+    ],
+    "external_url": "https://nft-hub.example.com/nft/10",
+    "background_color": "DC143C"
+  }
+]
