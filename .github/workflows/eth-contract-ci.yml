@@ -1,0 +1,54 @@
+name: Eth Contract CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'contracts/nft-hub-eth/**'
+      - 'eth-contract-ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'contracts/nft-hub-eth/**'
+      - 'eth-contract-ci.yml'
+
+jobs:
+  test-contracts:
+    runs-on: ubuntu-22.04
+    
+    defaults:
+      run:
+        working-directory: ./contracts/nft-hub-eth
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: contracts/nft-hub-eth/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Compile contracts
+      run: npm run compile
+
+    - name: Run tests
+      run: npm run test
+
+    - name: Run coverage (optional)
+      run: npm run coverage
+      continue-on-error: true
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v4
+      if: success()
+      with:
+        file: ./contracts/nft-hub-eth/coverage/lcov.info
+        flags: contracts
+        fail_ci_if_error: false
+      continue-on-error: true

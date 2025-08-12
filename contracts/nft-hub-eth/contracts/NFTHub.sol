@@ -8,26 +8,16 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract NFTHub is ERC721, Ownable, ReentrancyGuard, Pausable {
-    uint256 public registrationFee = 0.001 ether;
-    uint256 public mintingFee = 0.003 ether;
+    uint256 public registrationFee;
+    uint256 public mintingFee;
     uint256 public nextTokenId = 1;
+    uint8 public constant MAX_METADATA_URIS = 10;
     
     mapping(address => bool) public registeredUsers;
     mapping(address => bool) public blacklistedUsers;
     mapping(uint256 => string) public tokenURIs;
     
-    string[10] public predefinedMetadataURIs = [
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq",
-        "ipfs://bafkreigp5mvodmxpyjvo66xpzxs7d32kkc75x23j4zgrrlyglakpjdckiq"
-    ];
+    string[] public predefinedMetadataURIs;
     
     event UserRegistered(address indexed user, uint256 timestamp);
     event NFTMinted(address indexed to, uint256 indexed tokenId, string metadataURI, uint256 timestamp);
@@ -45,7 +35,29 @@ contract NFTHub is ERC721, Ownable, ReentrancyGuard, Pausable {
         _;
     }
     
-    constructor() ERC721("NFTHub", "NFTH") Ownable(msg.sender) {}
+    /**
+     * @dev Initializes the contract by setting the registration and minting fees and setting up predefined metadata URIs.
+     * @param _registrationFee Initial registration fee in wei
+     * @param _mintingFee Initial minting fee in wei
+     * @param _metadataURIs Array of IPFS URIs for predefined metadata (max 10)
+     */
+    constructor(
+        uint256 _registrationFee,
+        uint256 _mintingFee,
+        string[] memory _metadataURIs
+    ) ERC721("NftHubCollection", "NftHub") Ownable(msg.sender) {
+        require(_registrationFee > 0, "Registration fee must be greater than 0");
+        require(_mintingFee > 0, "Minting fee must be greater than 0");
+        require(_metadataURIs.length > 0 && _metadataURIs.length <= MAX_METADATA_URIS, "Invalid metadata URIs count");
+        
+        registrationFee = _registrationFee;
+        mintingFee = _mintingFee;
+        
+        for (uint8 i = 0; i < _metadataURIs.length; i++) {
+            require(bytes(_metadataURIs[i]).length > 0, "Empty metadata URI not allowed");
+            predefinedMetadataURIs.push(_metadataURIs[i]);
+        }
+    }
     
     function register() external payable nonReentrant notBlacklisted whenNotPaused {
         require(!registeredUsers[msg.sender], "User already registered");
@@ -55,7 +67,9 @@ contract NFTHub is ERC721, Ownable, ReentrancyGuard, Pausable {
         emit UserRegistered(msg.sender, block.timestamp);
         
         if (msg.value > registrationFee) {
-            payable(msg.sender).transfer(msg.value - registrationFee);
+            uint256 refund = msg.value - registrationFee;
+            (bool success, ) = payable(msg.sender).call{value: refund}("");
+            require(success, "Refund failed");
         }
     }
     
@@ -72,7 +86,9 @@ contract NFTHub is ERC721, Ownable, ReentrancyGuard, Pausable {
         emit NFTMinted(msg.sender, tokenId, tokenURIs[tokenId], block.timestamp);
         
         if (msg.value > mintingFee) {
-            payable(msg.sender).transfer(msg.value - mintingFee);
+            uint256 refund = msg.value - mintingFee;
+            (bool success, ) = payable(msg.sender).call{value: refund}("");
+            require(success, "Refund failed");
         }
     }
     
@@ -107,7 +123,9 @@ contract NFTHub is ERC721, Ownable, ReentrancyGuard, Pausable {
     function withdraw() external onlyOwner nonReentrant {
         uint256 balance = address(this).balance;
         require(balance > 0, "No funds to withdraw");
-        payable(owner()).transfer(balance);
+        
+        (bool success, ) = payable(owner()).call{value: balance}("");
+        require(success, "Withdrawal failed");
     }
     
     function pause() external onlyOwner {
@@ -130,8 +148,22 @@ contract NFTHub is ERC721, Ownable, ReentrancyGuard, Pausable {
         return blacklistedUsers[user];
     }
     
-    function getPredefinedMetadataURIs() external view returns (string[10] memory) {
+    function getPredefinedMetadataURIs() external view returns (string[] memory) {
         return predefinedMetadataURIs;
+    }
+    
+    function addMetadataURI(string calldata newURI) external onlyOwner {
+        require(bytes(newURI).length > 0, "Empty URI not allowed");
+        require(predefinedMetadataURIs.length < MAX_METADATA_URIS, "Maximum URIs limit reached");
+        predefinedMetadataURIs.push(newURI);
+    }
+    
+    function removeMetadataURI(uint256 index) external onlyOwner {
+        require(index < predefinedMetadataURIs.length, "Invalid index");
+        require(predefinedMetadataURIs.length > 1, "Cannot remove last URI");
+        
+        predefinedMetadataURIs[index] = predefinedMetadataURIs[predefinedMetadataURIs.length - 1];
+        predefinedMetadataURIs.pop();
     }
     
     function _update(address to, uint256 tokenId, address auth) internal override whenNotPaused returns (address) {
