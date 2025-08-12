@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ethers } from 'ethers'
 import { useWallet } from './useWallet'
-import nftHubABI from '@/abi/nft-hub.abi.json'
+import nftHubABI from '@/eth/abi/nft-hub.abi.json'
 
 const CONTRACT_ADDRESS = import.meta.env.VITE_ETH_CONTRACT_ADDRESS
 

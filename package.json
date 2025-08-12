@@ -5,8 +5,11 @@
   "scripts": {
     "dev:all": "npm-run-all --parallel --continue-on-error dev:be dev:fe",
     "dev:be": "cd apps/be && npm run start:dev",
-    "dev:fe": "cd apps/fe && npm run dev"
-  },
+    "dev:fe": "cd apps/fe && npm run dev",
+		"cp-abi:be": "cd apps/be && mkdir -p ./src/eth/abi && jq '.abi' ../../contracts/nft-hub-eth/artifacts/contracts/NFTHub.sol/NFTHub.json > ./src/eth/abi/nft-hub.abi.json",
+		"cp-abi:fe": "cd apps/fe && mkdir -p ./src/eth/abi && jq '.abi' ../../contracts/nft-hub-eth/artifacts/contracts/NFTHub.sol/NFTHub.json > ./src/eth/abi/nft-hub.abi.json",
+    "cp-meta:ct": "cd contracts/nft-hub-eth && mkdir"
+	},
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "husky": "^9.0.11",
