@@ -1,7 +1,7 @@
 import {Injectable, Inject, OnModuleInit, Logger} from '@nestjs/common';
 import { ethers } from 'ethers';
 import { CONFIG_PROVIDER } from '../config/config.provider';
-import type { AppConfig } from '../config/config.provider';
+import type { AppConfig } from '../config/config.types';
 import nftAbi from './abi/nft-hub.abi.json';
 
 interface NFT {
@@ -192,7 +192,7 @@ export class EthService implements OnModuleInit {
 			for (let i = 0; i < predefinedURIs.length; i++) {
 				const tokenId = nextId + i;
 				const metadataURI = predefinedURIs[i];
-				
+
 				if (metadataURI && metadataURI.trim() !== '') {
 					try {
 						const metadata = await this.fetchMetadataFromURI(metadataURI);
@@ -225,14 +225,14 @@ export class EthService implements OnModuleInit {
 		if (uri.startsWith('ipfs://')) {
 			const ipfsHash = uri.replace('ipfs://', '');
 			const metadataUrl = `${this.config.ipfsConfig.gatewayUrl}/${ipfsHash}`;
-			
+
 			const response = await fetch(metadataUrl);
 			if (!response.ok) {
 				throw new Error(`Failed to fetch metadata from IPFS: ${response.statusText}`);
 			}
 			return await response.json();
 		}
-		
+
 		const response = await fetch(uri);
 		if (!response.ok) {
 			throw new Error(`Failed to fetch metadata: ${response.statusText}`);

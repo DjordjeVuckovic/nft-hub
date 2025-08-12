@@ -2,17 +2,16 @@
   "name": "@cbs/nft-hub",
   "version": "0.0.1",
   "description": "NFT hub",
-  "workspaces": [
-    "apps/*"
-  ],
   "scripts": {
     "dev:all": "npm-run-all --parallel --continue-on-error dev:be dev:fe",
-    "dev:be": "npm run start:dev --workspace=@cbs/nft-hub-be",
-    "dev:fe": "npm run dev --workspace=@cbs/nft-hub-fe"
+    "dev:be": "cd apps/be && npm run start:dev",
+    "dev:fe": "cd apps/fe && npm run dev"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "husky": "^9.0.11",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "ts-loader": "^9.5.2"
   },
   "engines": {
     "node": ">=18"

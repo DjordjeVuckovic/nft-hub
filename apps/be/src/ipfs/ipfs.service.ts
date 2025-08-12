@@ -1,7 +1,6 @@
 import {Injectable, Logger, OnModuleInit, Inject} from '@nestjs/common';
 import {PinataSDK} from 'pinata';
-import type {AppConfig} from '../config/config.provider';
-import {CONFIG_PROVIDER} from '../config/config.provider';
+import type {IpfsConfig} from '../config/config.types';
 import {IpfsUploadResult, NftMetadata, FileUploadMetadata} from "./nft-metadata.types";
 import {PinataUploadBuilder} from './pinata.builder';
 
@@ -10,14 +9,14 @@ export class IpfsService implements OnModuleInit {
 	private readonly logger = new Logger(IpfsService.name);
 	private pinata: PinataSDK;
 
-	constructor(@Inject(CONFIG_PROVIDER) private readonly config: AppConfig) {
+	constructor(@Inject('IPFS_CONFIG') private readonly config: IpfsConfig) {
 	}
 
 	async onModuleInit() {
 		try {
 			this.pinata = new PinataSDK({
-				pinataJwt: this.config.ipfsConfig.pinataJwt,
-				pinataGateway: this.config.ipfsConfig.gatewayUrl,
+				pinataJwt: this.config.pinataJwt,
+				pinataGateway: this.config.gatewayUrl,
 			});
 
 			this.logger.log('Pinata service initialized successfully');
@@ -37,7 +36,7 @@ export class IpfsService implements OnModuleInit {
 
 			const upload = await new PinataUploadBuilder(this.pinata)
 				.file(file)
-				.group(this.config.ipfsConfig.groupId)
+				.group(this.config.groupId)
 				.upload();
 
 			const cid = upload.cid;
@@ -61,7 +60,7 @@ export class IpfsService implements OnModuleInit {
 			const upload = await new PinataUploadBuilder(this.pinata)
 				.json(jsonData)
 				.metadata(metadata)
-				.group(this.config.ipfsConfig.groupId)
+				.group(this.config.groupId)
 				.upload();
 
 			const cid = upload.cid;
@@ -95,7 +94,7 @@ export class IpfsService implements OnModuleInit {
 			const upload = await new PinataUploadBuilder(this.pinata)
 				.file(file)
 				.metadata(metadata)
-				.group(this.config.ipfsConfig.groupId)
+				.group(this.config.groupId)
 				.upload();
 
 			const cid = upload.cid;
@@ -113,6 +112,6 @@ export class IpfsService implements OnModuleInit {
 
 
 	getGatewayUrl(hash: string): string {
-		return `${this.config.ipfsConfig.gatewayUrl}/${hash}`;
+		return `${this.config.gatewayUrl}/${hash}`;
 	}
 }
