@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: APACHE-2.0
 // NFTHub.sol
 pragma solidity ^0.8.24;
 
