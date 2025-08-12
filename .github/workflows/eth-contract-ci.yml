@@ -5,12 +5,12 @@ on:
     branches: [ main ]
     paths:
       - 'contracts/nft-hub-eth/**'
-      - 'eth-contract-ci.yml'
+      - '.github/workflows/eth-contract-ci.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'contracts/nft-hub-eth/**'
-      - 'eth-contract-ci.yml'
+      - '.github/workflows/eth-contract-ci.yml'
 
 jobs:
   test-contracts:
