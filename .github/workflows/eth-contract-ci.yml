@@ -5,12 +5,17 @@ on:
     branches: [ main ]
     paths:
       - 'contracts/nft-hub-eth/**'
-      - 'eth-contract-ci.yml'
+      - '.github/workflows/eth-contract-ci.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'contracts/nft-hub-eth/**'
-      - 'eth-contract-ci.yml'
+      - '.github/workflows/eth-contract-ci.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
 
 jobs:
   test-contracts:
@@ -40,15 +45,14 @@ jobs:
     - name: Run tests
       run: npm run test
 
-    - name: Run coverage (optional)
+    - name: Run coverage
       run: npm run coverage
       continue-on-error: true
 
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v4
-      if: success()
+    - name: Coverage Report
+      uses: romeovs/lcov-reporter-action@v0.3.1
+      if: github.event_name == 'pull_request'
       with:
-        file: ./contracts/nft-hub-eth/coverage/lcov.info
-        flags: contracts
-        fail_ci_if_error: false
-      continue-on-error: true
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        lcov-file: ./contracts/nft-hub-eth/coverage/lcov.info
+        delete-old-comments: true
