@@ -18,7 +18,7 @@ permissions:
   issues: write
 
 jobs:
-  test-contracts:
+  build-and-test:
     runs-on: ubuntu-22.04
     
     defaults:
