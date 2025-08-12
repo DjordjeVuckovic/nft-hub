@@ -5,6 +5,7 @@ export type DbConfig = {
 
 export type AuthConfig = {
 	jwtSecret: string;
+	apiKey: string;
 }
 
 export type IpfsConfig = {

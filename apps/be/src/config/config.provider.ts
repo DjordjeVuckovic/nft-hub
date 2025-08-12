@@ -20,11 +20,12 @@ export const ConfigProvider = {
 				groupId: process.env.PINATA_GROUP_ID || ''
 			},
 			authConfig: {
-				jwtSecret: process.env.JWT_SECRET || 'supersecretkey'
+				jwtSecret: process.env.JWT_SECRET || 'supersecretkey',
+				apiKey: process.env.API_KEY || '0feee7695743d402626d73643693696e33b385978b097deee7ab44d5854d8123'
 			},
 			ethConfig: {
-				rpcUrl: process.env.ETH_RPC_URL || 'https://mainnet.infura.io/v3/YOUR_INFURA_API_KEY',
-				wsUrl: process.env.ETH_WS_URL || 'wss://mainnet.infura.io/ws/v3/YOUR_INFURA_API_KEY',
+				rpcUrl: process.env.ETH_RPC_URL || 'https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY',
+				wsUrl: process.env.ETH_WS_URL || 'wss://sepolia.infura.io/ws/v3/YOUR_INFURA_API_KEY',
 				contractAddress: process.env.ETH_CONTRACT_ADDRESS || '0xYourContractAddress'
 			}
 		};
