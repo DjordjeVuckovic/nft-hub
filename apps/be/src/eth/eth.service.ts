@@ -3,26 +3,7 @@ import { ethers } from 'ethers';
 import { CONFIG_PROVIDER } from '../config/config.provider';
 import type { AppConfig } from '../config/config.types';
 import nftAbi from './abi/nft-hub.abi.json';
-
-interface NFT {
-  tokenId: string;
-  owner: string;
-  tokenURI: string;
-  metadata?: any;
-}
-
-interface AvailableNFT {
-  tokenId: string;
-  metadataURI: string;
-  metadata?: any;
-}
-
-interface CollectionInfo {
-  contractAddress: string;
-  name: string;
-  symbol: string;
-  totalSupply: string;
-}
+import {BasicCollectionInfo, ContractNFT} from "./eth.types";
 
 @Injectable()
 export class EthService implements OnModuleInit {
@@ -55,32 +36,37 @@ export class EthService implements OnModuleInit {
 		}
 	}
 
-	async getCollectionInfo(): Promise<CollectionInfo> {
+	async getCollectionInfo(): Promise<BasicCollectionInfo> {
 		try {
-			const [name, symbol, totalSupply] = await Promise.all([
+			const [name, symbol, totalSupply, nextTokenId, registrationFee, mintingFee] = await Promise.all([
 				this.contract.name(),
 				this.contract.symbol(),
-				this.contract.getTotalSupply()
+				this.contract.getTotalSupply(),
+				this.contract.nextTokenId(),
+				this.contract.registrationFee(),
+				this.contract.mintingFee()
 			]);
 
 			return {
 				contractAddress: this.config.ethConfig.contractAddress,
 				name,
 				symbol,
-				totalSupply: totalSupply.toString()
+				totalSupply: totalSupply.toString(),
+				nextTokenId: nextTokenId.toString(),
+				registrationFee: registrationFee.toString(),
+				mintingFee: mintingFee.toString()
 			};
 		} catch (error) {
 			throw new Error(`Failed to get collection info: ${error.message}`);
 		}
 	}
 
-	async getAllNFTs(): Promise<{ nfts: NFT[]; totalSupply: string; nextTokenId: string }> {
+	async getAllMintedNFTs(): Promise<ContractNFT[]> {
 		try {
 			const totalSupply = await this.contract.getTotalSupply();
-			const nextTokenId = await this.contract.nextTokenId();
-			const nfts: NFT[] = [];
+			const nfts: ContractNFT[] = [];
 
-			for (let tokenId = 0; tokenId < Number(nextTokenId); tokenId++) {
+			for (let tokenId = 0; tokenId < Number(totalSupply); tokenId++) {
 				try {
 					const [owner, tokenURI] = await Promise.all([
 						this.contract.ownerOf(tokenId),
@@ -93,150 +79,24 @@ export class EthService implements OnModuleInit {
 						tokenURI
 					});
 				} catch (tokenError) {
-					console.log(`Token ${tokenId} does not exist or error occurred:`, tokenError.message);
+					this.logger.warn(`Token ${tokenId} does not exist:`, tokenError.message);
 				}
 			}
 
-			return {
-				nfts,
-				totalSupply: totalSupply.toString(),
-				nextTokenId: nextTokenId.toString()
-			};
-		} catch (error) {
-			throw new Error(`Failed to get all NFTs: ${error.message}`);
-		}
-	}
-
-	async getNFTsByOwner(ownerAddress: string): Promise<NFT[]> {
-		try {
-			const balance = await this.contract.balanceOf(ownerAddress);
-			if (Number(balance) === 0) {
-				return [];
-			}
-
-			const allNFTs = await this.getAllNFTs();
-			return allNFTs.nfts.filter(nft => nft.owner.toLowerCase() === ownerAddress.toLowerCase());
-		} catch (error) {
-			throw new Error(`Failed to get NFTs for owner ${ownerAddress}: ${error.message}`);
-		}
-	}
-
-	async getNFTById(tokenId: string): Promise<NFT | null> {
-		try {
-			const [owner, tokenURI] = await Promise.all([
-				this.contract.ownerOf(tokenId),
-				this.contract.tokenURI(tokenId)
-			]);
-
-			return {
-				tokenId,
-				owner,
-				tokenURI
-			};
-		} catch (error) {
-			if (error.message.includes('ERC721NonexistentToken')) {
-				return null;
-			}
-			throw new Error(`Failed to get NFT ${tokenId}: ${error.message}`);
-		}
-	}
-
-	async getNFTMetadata(tokenId: string): Promise<any> {
-		try {
-			const tokenURI = await this.contract.tokenURI(tokenId);
-
-			if (tokenURI.startsWith('ipfs://')) {
-				const ipfsHash = tokenURI.replace('ipfs://', '');
-				const metadataUrl = `${this.config.ipfsConfig.gatewayUrl}/${ipfsHash}`;
-
-				const response = await fetch(metadataUrl);
-				if (!response.ok) {
-					return Promise.reject(`Failed to fetch metadata from IPFS: ${response.statusText}`);
-				}
-				return await response.json();
-			}
-
-			return { tokenURI };
-		} catch (error) {
-			throw new Error(`Failed to get metadata for token ${tokenId}: ${error.message}`);
-		}
-	}
-
-	getContractAddress(): string {
-		return this.config.ethConfig.contractAddress;
-	}
-
-	getRpcUrl(): string {
-		return this.config.ethConfig.rpcUrl;
-	}
-
-	async getMintedNFTs(): Promise<NFT[]> {
-		try {
-			const allNFTsData = await this.getAllNFTs();
-			return allNFTsData.nfts;
+			return nfts;
 		} catch (error) {
 			throw new Error(`Failed to get minted NFTs: ${error.message}`);
 		}
 	}
 
-	async getAvailableToMint(): Promise<{ availableNFTs: AvailableNFT[]; nextTokenId: string }> {
+
+
+	async getPredefinedMetadataURIs(): Promise<string[]> {
 		try {
-			const [nextTokenId, predefinedURIs] = await Promise.all([
-				this.contract.nextTokenId(),
-				this.contract.getPredefinedMetadataURIs()
-			]);
-
-			const nextId = Number(nextTokenId);
-			const availableNFTs: AvailableNFT[] = [];
-
-			for (let i = 0; i < predefinedURIs.length; i++) {
-				const tokenId = nextId + i;
-				const metadataURI = predefinedURIs[i];
-
-				if (metadataURI && metadataURI.trim() !== '') {
-					try {
-						const metadata = await this.fetchMetadataFromURI(metadataURI);
-						availableNFTs.push({
-							tokenId: tokenId.toString(),
-							metadataURI,
-							metadata
-						});
-					} catch (metadataError) {
-						this.logger.warn(`Failed to fetch metadata for URI ${metadataURI}:`, metadataError.message);
-						availableNFTs.push({
-							tokenId: tokenId.toString(),
-							metadataURI,
-							metadata: null
-						});
-					}
-				}
-			}
-
-			return {
-				availableNFTs,
-				nextTokenId: nextTokenId.toString()
-			};
+			return await this.contract.getPredefinedMetadataURIs();
 		} catch (error) {
-			throw new Error(`Failed to get available NFTs to mint: ${error.message}`);
+			throw new Error(`Failed to get predefined metadata URIs: ${error.message}`);
 		}
 	}
 
-	private async fetchMetadataFromURI(uri: string): Promise<any> {
-		if (uri.startsWith('ipfs://')) {
-			const ipfsHash = uri.replace('ipfs://', '');
-			const metadataUrl = `${this.config.ipfsConfig.gatewayUrl}/${ipfsHash}`;
-
-			const response = await fetch(metadataUrl);
-			if (!response.ok) {
-				throw new Error(`Failed to fetch metadata from IPFS: ${response.statusText}`);
-			}
-			return await response.json();
-		}
-
-		const response = await fetch(uri);
-		if (!response.ok) {
-			throw new Error(`Failed to fetch metadata: ${response.statusText}`);
-		}
-		return await response.json();
-	}
 }

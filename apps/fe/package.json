@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+		"test": "echo 'No tests specified' && exit 0",
+		"coverage": "echo 'No coverage specified' && exit 0",
+		"format": "prettier --write \"src/**/*.{ts,tsx}\"",
+		"format:check": "prettier --check \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.15",

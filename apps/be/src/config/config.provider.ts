@@ -15,7 +15,7 @@ export const ConfigProvider = {
 				options: {}
 			},
 			ipfsConfig: {
-				gatewayUrl: process.env.IPFS_GATEWAY_URL || 'https://gateway.pinata.cloud/ipfs',
+				gatewayUrl: process.env.IPFS_GATEWAY_URL || 'gateway.pinata.cloud/ipfs',
 				pinataJwt: process.env.PINATA_JWT || '',
 				groupId: process.env.PINATA_GROUP_ID || ''
 			},

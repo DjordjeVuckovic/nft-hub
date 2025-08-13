@@ -1,6 +1,22 @@
 [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_registrationFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_mintingFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_metadataURIs",
+        "type": "string[]"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -378,6 +394,32 @@
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "MAX_METADATA_URIS",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "newURI",
+        "type": "string"
+      }
+    ],
+    "name": "addMetadataURI",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -470,9 +512,9 @@
     "name": "getPredefinedMetadataURIs",
     "outputs": [
       {
-        "internalType": "string[10]",
+        "internalType": "string[]",
         "name": "",
-        "type": "string[10]"
+        "type": "string[]"
       }
     ],
     "stateMutability": "view",
@@ -724,6 +766,19 @@
       }
     ],
     "name": "removeFromBlacklist",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "removeMetadataURI",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

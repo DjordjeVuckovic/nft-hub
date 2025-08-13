@@ -113,28 +113,6 @@ export class IpfsController {
 		}
 	}
 
-	@Get(':hash')
-	async getFile(@Param('hash') hash: string) {
-		if (!hash) {
-			throw new BadRequestException('Hash parameter is required');
-		}
-
-		try {
-			const gatewayUrl = this.ipfsService.getGatewayUrl(hash);
-
-			return {
-				success: true,
-				data: {
-					hash,
-					gatewayUrl,
-				},
-				message: 'IPFS gateway URL retrieved successfully',
-			};
-		} catch (error) {
-			throw new BadRequestException(`Failed to get file info: ${error.message}`);
-		}
-	}
-
 	private validateFile(file: Express.Multer.File): void {
 		if (!file) {
 			throw new BadRequestException('No file provided');

@@ -1,89 +1,79 @@
-import {Inject, Injectable} from '@nestjs/common';
+import {Inject, Injectable, Logger} from '@nestjs/common';
 import {CACHE_MANAGER} from "@nestjs/cache-manager";
-import type { Cache } from 'cache-manager';
-import { EthService } from '../eth/eth.service';
-import {CollectionInfo, CollectionResponse, NFT} from "./nfts.types";
+import type {Cache} from 'cache-manager';
+import {EthService} from '../eth/eth.service';
+import {IpfsService} from '../ipfs/ipfs.service';
+import {NFT, NFTCollectionResponse} from "./nfts.types";
+import {ContractNFT} from "../eth/eth.types";
+
+const CACHE_ALL_TTL = 10 * 60 * 1000;
 
 @Injectable()
 export class NftsService {
+	private readonly logger = new Logger(NftsService.name);
+
 	constructor(
 		@Inject(CACHE_MANAGER) private cacheManager: Cache,
-		private ethService: EthService
-	) {}
-
-	async getCollectionInfo(): Promise<CollectionInfo> {
-		const cacheKey = 'nft:collection:info';
-
-		let collectionInfo = await this.cacheManager.get<CollectionInfo>(cacheKey);
-		if (collectionInfo) {
-			return collectionInfo;
-		}
-
-		collectionInfo = await this.ethService.getCollectionInfo();
-
-		await this.cacheManager.set(cacheKey, collectionInfo, 300000);
-
-		return collectionInfo;
+		private ethService: EthService,
+		private ipfsService: IpfsService
+	) {
 	}
 
-	async getAllNFTs(): Promise<CollectionResponse> {
-		const cacheKey = 'nft:collection:all';
+	async getAllNFTsUnified(): Promise<NFTCollectionResponse> {
+		const cacheKey = 'nft:all';
 
-		let collection = await this.cacheManager.get<CollectionResponse>(cacheKey);
-		if (collection) {
-			return collection;
+		let cached = await this.cacheManager.get<NFTCollectionResponse>(cacheKey);
+		if (cached) {
+			return cached;
 		}
 
-		collection = await this.ethService.getAllNFTs();
+		try {
+			const [collectionInfo, predefinedURIs, mintedNFTs] = await Promise.all([
+				this.ethService.getCollectionInfo(),
+				this.ethService.getPredefinedMetadataURIs(),
+				this.ethService.getAllMintedNFTs()
+			]);
 
-		await this.cacheManager.set(cacheKey, collection, 120000);
+			const nfts: NFT[] = [];
 
-		return collection;
-	}
+			for (let i = 0; i < predefinedURIs.length; i++) {
+				const metadataURI = predefinedURIs[i];
 
-	async getNFTsByOwner(ownerAddress: string): Promise<NFT[]> {
-		const cacheKey = `nft:owner:${ownerAddress.toLowerCase()}`;
+				if (!metadataURI || metadataURI.trim() === '') {
+					continue;
+				}
 
-		let nfts = await this.cacheManager.get<NFT[]>(cacheKey);
-		if (nfts) {
-			return nfts;
+				const mintedNFT = mintedNFTs.find((nft: ContractNFT) => {
+					return parseInt(nft.tokenId) === i;
+				});
+
+				let metadata = null;
+				try {
+					metadata = await this.ipfsService.fetchMetadata(metadataURI);
+				} catch (error) {
+					this.logger.error(`Failed to fetch metadata for URI ${metadataURI}: ${error.message}`);
+				}
+
+				nfts.push({
+					index: i,
+					tokenId: mintedNFT?.tokenId,
+					owner: mintedNFT?.owner,
+					tokenURI: metadataURI,
+					metadata,
+					isMinted: !!mintedNFT
+				});
+			}
+
+			const result: NFTCollectionResponse = {
+				nfts: nfts,
+				collectionInfo
+			};
+
+			await this.cacheManager.set(cacheKey, result, CACHE_ALL_TTL);
+			return result;
+		} catch (error) {
+			throw new Error(`Failed to get unified NFT collection: ${error.message}`);
 		}
-
-		nfts = await this.ethService.getNFTsByOwner(ownerAddress);
-
-		await this.cacheManager.set(cacheKey, nfts, 60000);
-
-		return nfts;
-	}
-
-	async getNFTById(tokenId: string): Promise<NFT | null> {
-		const cacheKey = `nft:token:${tokenId}`;
-
-		let nft = await this.cacheManager.get<NFT | null>(cacheKey);
-		if (nft !== undefined) {
-			return nft;
-		}
-
-		nft = await this.ethService.getNFTById(tokenId);
-
-		await this.cacheManager.set(cacheKey, nft, 300000);
-
-		return nft;
-	}
-
-	async getNFTMetadata(tokenId: string): Promise<any> {
-		const cacheKey = `nft:metadata:${tokenId}`;
-
-		let metadata = await this.cacheManager.get<any>(cacheKey);
-		if (metadata) {
-			return metadata;
-		}
-
-		metadata = await this.ethService.getNFTMetadata(tokenId);
-
-		await this.cacheManager.set(cacheKey, metadata, 600000);
-
-		return metadata;
 	}
 
 	async clearCache(): Promise<void> {

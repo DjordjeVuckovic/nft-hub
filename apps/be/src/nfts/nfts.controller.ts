@@ -1,44 +1,19 @@
-import { Controller, Get, Param, Query, Delete } from '@nestjs/common';
+import {Controller, Get, Delete, Query, UseGuards} from '@nestjs/common';
 import { NftsService } from './nfts.service';
-import {CollectionInfo} from "./nfts.types";
+import { NFTCollectionResponse } from "./nfts.types";
+import {ApiKeyGuard} from "../auth/api-key.guard";
 
 @Controller('/api/v1/nfts')
 export class NftsController {
 	constructor(private readonly nftsService: NftsService) {}
 
-	@Get('collection/info')
-	async getCollectionInfo(): Promise<CollectionInfo> {
-		return this.nftsService.getCollectionInfo();
-	}
-
-	@Get('collection')
-	async getAllNFTs() {
-		return this.nftsService.getAllNFTs();
-	}
-
-	@Get('owner/:address')
-	async getNFTsByOwner(@Param('address') address: string) {
-		if (!address) {
-			throw new Error('Address parameter is required');
-		}
-		return this.nftsService.getNFTsByOwner(address);
-	}
-
-	@Get(':tokenId')
-	async getNFTById(@Param('tokenId') tokenId: string) {
-		const nft = await this.nftsService.getNFTById(tokenId);
-		if (!nft) {
-			return { error: 'NFT not found', tokenId };
-		}
-		return nft;
-	}
-
-	@Get(':tokenId/metadata')
-	async getNFTMetadata(@Param('tokenId') tokenId: string) {
-		return this.nftsService.getNFTMetadata(tokenId);
+	@Get()
+	async getAllNFTsUnified(): Promise<NFTCollectionResponse> {
+		return this.nftsService.getAllNFTsUnified();
 	}
 
 	@Delete('cache')
+	@UseGuards(ApiKeyGuard)
 	async clearCache(@Query('pattern') pattern?: string) {
 		if (pattern) {
 			await this.nftsService.clearCacheByPattern(pattern);

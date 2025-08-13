@@ -110,8 +110,21 @@ export class IpfsService implements OnModuleInit {
 		}
 	}
 
+	async fetchMetadata(ipfsUri: string): Promise<any> {
+		try {
+			if (!ipfsUri.startsWith('ipfs://')) {
+				throw new Error('Invalid IPFS URI format');
+			}
 
-	getGatewayUrl(hash: string): string {
-		return `${this.config.gatewayUrl}/${hash}`;
+			const ipfsHash = ipfsUri.replace('ipfs://', '');
+
+			const { data, contentType } = await this.pinata.gateways.public.get(ipfsHash);
+
+			this.logger.debug(`Successfully fetched metadata for hash: ${ipfsHash}, contentType: ${contentType}`);
+			return data;
+		} catch (error) {
+			this.logger.error(`Failed to fetch metadata for URI ${ipfsUri}:`, error);
+			throw new Error(`Failed to fetch metadata from IPFS: ${error.message}`);
+		}
 	}
 }

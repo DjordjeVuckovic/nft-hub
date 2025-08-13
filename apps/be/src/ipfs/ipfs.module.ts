@@ -16,5 +16,6 @@ import {AppConfig} from "../config/config.types";
     },
     IpfsService,
   ],
+  exports: [IpfsService]
 })
 export class IpfsModule {}

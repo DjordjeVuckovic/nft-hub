@@ -1,8 +1,22 @@
+type NFTMetadata = {
+	id: number | string;
+	name: string;
+	description: string;
+	image: string;
+	attributes?: Array<{ trait_type: string; value: string | number }>;
+	external_url?: string;
+	background_color?: string;
+	[key: string]: any;
+
+}
+
 type NFT = {
-	tokenId: string;
-	owner: string;
+	index: number;
+	tokenId?: string;  // Only present if minted
+	owner?: string;    // Only present if minted
 	tokenURI: string;
-	metadata?: any;
+	metadata?: NFTMetadata | null;
+	isMinted: boolean;
 }
 
 type CollectionInfo = {
@@ -10,16 +24,19 @@ type CollectionInfo = {
 	name: string;
 	symbol: string;
 	totalSupply: string;
+	nextTokenId: string;
+	registrationFee: string;
+	mintingFee: string;
 }
 
-type CollectionResponse = {
+type NFTCollectionResponse = {
 	nfts: NFT[];
-	totalSupply: string;
-	nextTokenId: string;
+	collectionInfo: CollectionInfo;
 }
 
 export type {
+	NFTMetadata,
 	NFT,
 	CollectionInfo,
-	CollectionResponse
+	NFTCollectionResponse
 }

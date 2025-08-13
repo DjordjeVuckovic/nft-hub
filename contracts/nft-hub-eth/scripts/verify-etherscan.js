@@ -1,5 +1,4 @@
 import hre from "hardhat";
-const { ethers } = hre;
 import "dotenv/config";
 import { loadNftMetadataUris } from "./nft-data-loader.js";
 import {MINTING_FEE, REGISTRATION_FEE} from "./consts.js";
@@ -15,13 +14,16 @@ async function main() {
 
   console.log(`Verifying contract at address: ${contractAddress}`);
 
-  // Load the same constructor arguments used during deployment
   const metadataURIs = await loadNftMetadataUris();
 
   try {
     await hre.run("verify:verify", {
       address: contractAddress,
-      constructorArguments: [REGISTRATION_FEE, MINTING_FEE, metadataURIs],
+      constructorArguments: [
+				REGISTRATION_FEE,
+				MINTING_FEE,
+				metadataURIs
+			],
     });
     console.log("Contract verified successfully!");
   } catch (error) {
