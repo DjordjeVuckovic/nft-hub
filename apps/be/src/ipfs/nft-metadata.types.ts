@@ -32,15 +32,3 @@ export interface NftUploadResult {
     metadataUrl: string;
     metadata: NftMetadata;
 }
-
-export interface NftUploadRequest {
-    name: string;
-    description: string;
-    image: string; // IPFS CID or full URL
-    attributes?: Array<{
-        trait_type: string;
-        value: string | number;
-    }>;
-    external_url?: string;
-    background_color?: string;
-}

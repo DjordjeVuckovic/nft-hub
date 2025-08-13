@@ -2,31 +2,27 @@ import { useState, useEffect, useCallback } from 'react'
 import { ethers } from 'ethers'
 import { useWallet } from './useWallet'
 import nftHubABI from '@/eth/abi/nft-hub.abi.json'
+import {environment} from "@/config/env.ts";
 
-const CONTRACT_ADDRESS = import.meta.env.VITE_ETH_CONTRACT_ADDRESS
+const CONTRACT_ADDRESS = environment.ETH_CONTRACT_ADDRESS
 
 interface UseNftHubReturn {
-  // Contract data
   isRegistered: boolean
   isBlacklisted: boolean
   registrationFee: string
   mintingFee: string
 
-  // Loading states
   isLoadingStatus: boolean
   isLoadingFees: boolean
   isLoadingRegister: boolean
 
-  // Transaction data
   lastTxHash: string | null
 
-  // Functions
   checkRegistrationStatus: () => Promise<void>
   fetchFees: () => Promise<void>
   register: () => Promise<{ success: boolean; error?: string; txHash?: string }>
   mint: (metadataIndex: number) => Promise<{ success: boolean; error?: string; txHash?: string }>
 
-  // Utility
   refresh: () => Promise<void>
 }
 
@@ -35,8 +31,8 @@ export function useNftHubContract(): UseNftHubReturn {
 
   const [isRegistered, setIsRegistered] = useState(false)
   const [isBlacklisted, setIsBlacklisted] = useState(false)
-  const [registrationFee, setRegistrationFee] = useState<string>('0.01')
-  const [mintingFee, setMintingFee] = useState<string>('0.01')
+  const [registrationFee, setRegistrationFee] = useState<string>('0')
+  const [mintingFee, setMintingFee] = useState<string>('0')
 
   const [isLoadingStatus, setIsLoadingStatus] = useState(false)
   const [isLoadingFees, setIsLoadingFees] = useState(false)
@@ -50,8 +46,8 @@ export function useNftHubContract(): UseNftHubReturn {
     } else {
       setIsRegistered(false)
       setIsBlacklisted(false)
-      setRegistrationFee('0.01')
-      setMintingFee('0.01')
+      setRegistrationFee('0')
+      setMintingFee('0')
       setLastTxHash(null)
     }
   }, [isConnected, account, provider])
@@ -138,19 +134,25 @@ export function useNftHubContract(): UseNftHubReturn {
 
       let errorMessage = 'Registration failed. Please try again.'
 
-      if (err.code === 'ACTION_REJECTED') {
-        errorMessage = 'Transaction was rejected by user'
-      } else if (err.code === 'INSUFFICIENT_FUNDS') {
-        errorMessage = 'Insufficient funds to complete registration'
-      } else if (err.message?.includes('already registered')) {
-        errorMessage = 'Address is already registered'
-      } else if (err.message?.includes('blacklisted')) {
-        errorMessage = 'Address is blacklisted'
-      } else if (err.reason) {
-        errorMessage = err.reason
-      } else if (err.message) {
-        errorMessage = err.message
-      }
+			switch (err.code) {
+				case 'ACTION_REJECTED':
+					errorMessage = 'Transaction was rejected by user'
+					break
+				case 'INSUFFICIENT_FUNDS':
+					errorMessage = 'Insufficient funds to complete registration'
+					break
+				default:
+					if (err.message?.includes('already registered')) {
+						errorMessage = 'Address is already registered'
+					} else if (err.message?.includes('blacklisted')) {
+						errorMessage = 'Address is blacklisted'
+					} else if (err.reason) {
+						errorMessage = err.reason
+					} else if (err.message) {
+						errorMessage = err.message
+					}
+					break
+			}
 
       return { success: false, error: errorMessage }
     } finally {
@@ -179,7 +181,7 @@ export function useNftHubContract(): UseNftHubReturn {
 
       const tx = await contract.mint(metadataIndex, {
         value: fee,
-        gasLimit: 150000
+        gasLimit: 150_000
       })
 
       setLastTxHash(tx.hash)

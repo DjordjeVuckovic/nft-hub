@@ -1,4 +1,4 @@
-export interface Network {
+export type Network = {
   id: string
   chainId: number
   name: string
@@ -128,7 +128,6 @@ export const NETWORKS: Record<string, Network> = {
   }
 }
 
-export const DEFAULT_NETWORK = NETWORKS.sepolia // Start with testnet
 
 export function getNetworkByChainId(chainId: number): Network | undefined {
   return Object.values(NETWORKS).find(network => network.chainId === chainId)

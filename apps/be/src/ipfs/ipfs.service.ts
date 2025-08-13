@@ -98,7 +98,7 @@ export class IpfsService implements OnModuleInit {
 				.upload();
 
 			const cid = upload.cid;
-			this.logger.log(`File uploaded successfully to Pinata: ${cid}`);
+			this.logger.debug(`File uploaded successfully to Pinata: ${cid}`);
 
 			return {
 				cid: cid,
@@ -111,13 +111,12 @@ export class IpfsService implements OnModuleInit {
 	}
 
 	async fetchMetadata(ipfsUri: string): Promise<any> {
+		if (!ipfsUri.startsWith('ipfs://')) {
+			throw new Error('Invalid IPFS URI format');
+		}
+
 		try {
-			if (!ipfsUri.startsWith('ipfs://')) {
-				throw new Error('Invalid IPFS URI format');
-			}
-
 			const ipfsHash = ipfsUri.replace('ipfs://', '');
-
 			const { data, contentType } = await this.pinata.gateways.public.get(ipfsHash);
 
 			this.logger.debug(`Successfully fetched metadata for hash: ${ipfsHash}, contentType: ${contentType}`);
@@ -126,5 +125,6 @@ export class IpfsService implements OnModuleInit {
 			this.logger.error(`Failed to fetch metadata for URI ${ipfsUri}:`, error);
 			throw new Error(`Failed to fetch metadata from IPFS: ${error.message}`);
 		}
+
 	}
 }

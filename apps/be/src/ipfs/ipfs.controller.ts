@@ -1,11 +1,9 @@
 import {
 	Controller,
 	Post,
-	Get,
 	UseInterceptors,
 	UploadedFile,
 	Body,
-	Param,
 	BadRequestException,
 	HttpStatus,
 	HttpCode,
@@ -14,7 +12,7 @@ import {
 import {FileInterceptor} from '@nestjs/platform-express';
 import {IpfsService} from './ipfs.service';
 import {ApiKeyGuard} from '../auth/api-key.guard';
-import type {IpfsUploadResult, NftUploadRequest, FileUploadMetadata} from './nft-metadata.types';
+import type {IpfsUploadResult, NftMetadata, FileUploadMetadata} from './nft-metadata.types';
 
 type UploadResponse = {
 	data: IpfsUploadResult;
@@ -40,6 +38,35 @@ export class IpfsController {
 			};
 		} catch (error) {
 			throw new BadRequestException(`Upload failed: ${error.message}`);
+		}
+	}
+
+	@Post('metadata')
+	@HttpCode(HttpStatus.OK)
+	async createNftMetadata(@Body() metadataRequest: NftMetadata): Promise<UploadResponse> {
+		if (!metadataRequest.name || !metadataRequest.description) {
+			throw new BadRequestException('Name and description are required for NFT metadata');
+		}
+
+		if (!metadataRequest.image) {
+			throw new BadRequestException('Image URL/CID is required for NFT metadata');
+		}
+
+		try {
+
+			const uploadMetadata: FileUploadMetadata = {
+				name: `${metadataRequest.name} - NFT Metadata`,
+				category: 'nft-metadata',
+				project: metadataRequest.name
+			};
+
+			const result = await this.ipfsService.uploadJson(metadataRequest, uploadMetadata);
+
+			return {
+				data: result,
+			};
+		} catch (error) {
+			throw new BadRequestException(`Metadata upload failed: ${error.message}`);
 		}
 	}
 
@@ -73,43 +100,6 @@ export class IpfsController {
 			};
 		} catch (error) {
 			throw new BadRequestException(`Upload with metadata failed: ${error.message}`);
-		}
-	}
-
-	@Post('metadata')
-	@HttpCode(HttpStatus.OK)
-	async createNftMetadata(@Body() metadataRequest: NftUploadRequest): Promise<UploadResponse> {
-		if (!metadataRequest.name || !metadataRequest.description) {
-			throw new BadRequestException('Name and description are required for NFT metadata');
-		}
-
-		if (!metadataRequest.image) {
-			throw new BadRequestException('Image URL/CID is required for NFT metadata');
-		}
-
-		try {
-			const metadata = {
-				name: metadataRequest.name,
-				description: metadataRequest.description,
-				image: metadataRequest.image,
-				attributes: metadataRequest.attributes || [],
-				external_url: metadataRequest.external_url,
-				background_color: metadataRequest.background_color,
-			};
-
-			const uploadMetadata: FileUploadMetadata = {
-				name: `${metadataRequest.name} - NFT Metadata`,
-				category: 'nft-metadata',
-				project: metadataRequest.name
-			};
-
-			const result = await this.ipfsService.uploadJson(metadata, uploadMetadata);
-
-			return {
-				data: result,
-			};
-		} catch (error) {
-			throw new BadRequestException(`Metadata upload failed: ${error.message}`);
 		}
 	}
 

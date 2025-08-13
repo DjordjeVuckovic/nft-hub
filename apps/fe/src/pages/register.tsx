@@ -95,7 +95,7 @@ export default function Register() {
                     <div className="bg-muted rounded-lg p-4 border border-border">
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground">Registration Fee</span>
-                        <span className="font-medium">{registrationFee} ETH</span>
+                        <span className="font-medium text-muted-foreground">{registrationFee} ETH</span>
                       </div>
                     </div>
 

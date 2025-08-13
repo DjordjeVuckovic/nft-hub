@@ -8,10 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-		"test": "echo 'No tests specified' && exit 0",
-		"coverage": "echo 'No coverage specified' && exit 0",
-		"format": "prettier --write \"src/**/*.{ts,tsx}\"",
-		"format:check": "prettier --check \"src/**/*.{ts,tsx}\""
+    "test": "echo 'No tests specified' && exit 0",
+    "coverage": "echo 'No coverage specified' && exit 0",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@radix-ui/react-dropdown-menu": "^2.1.15",
@@ -25,6 +25,7 @@
     "lucide-react": "^0.539.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-error-boundary": "^6.0.0",
     "react-router-dom": "^7.8.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
