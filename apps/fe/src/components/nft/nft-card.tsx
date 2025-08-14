@@ -139,7 +139,7 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
           </div>
         )}
 
-        {/* Action Button - Pushed to bottom */}
+        {/* Action Button */}
         <div className="mt-auto">
           {nft.isMinted ? (
             <button

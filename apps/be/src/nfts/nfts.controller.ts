@@ -4,6 +4,7 @@ import {NftsService} from './nfts.service';
 import {NFTCollectionResponse} from "./nfts.types";
 import {ApiKeyGuard} from "../auth/api-key.guard";
 import {IpfsService} from '../ipfs/ipfs.service';
+import {QueryToBoolPipe} from "../pipes/query-to-bool.pipe";
 
 @Controller('/api/v1/nfts')
 export class NftsController {
@@ -14,7 +15,7 @@ export class NftsController {
 	}
 
 	@Get()
-	async getAll(@Query('useCache') useCache: boolean = true): Promise<NFTCollectionResponse> {
+	async getAll(@Query('useCache', new QueryToBoolPipe()) useCache: boolean): Promise<NFTCollectionResponse> {
 		return this.nftsService.getAll(useCache);
 	}
 

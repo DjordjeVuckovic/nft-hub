@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <!-- Rounded purple square background -->
+    <rect x="4" y="4" width="40" height="40" rx="8" fill="#7C3AED"/>
+
+    <!-- NFT text -->
+    <text x="12" y="28" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">NFT</text>
+
+    <!-- Arrow pointing right -->
+    <path d="M30 18 L38 24 L30 30 Z" fill="white"/>
+</svg>
