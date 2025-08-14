@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { NFT } from '@/types/nft'
-import { useNftHubContract } from '@/hooks/useNftHubContract'
+import { useEthContract } from '@/hooks/useEthContract.ts'
 
 interface NFTCardProps {
   nft: NFT
@@ -9,7 +9,7 @@ interface NFTCardProps {
 
 export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const { mint, isRegistered, mintingFee } = useNftHubContract()
+  const { mint, isRegistered, mintingFee } = useEthContract()
 
   const handleMint = async () => {
     if (!isRegistered || nft.isMinted) return

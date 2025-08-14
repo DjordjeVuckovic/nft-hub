@@ -3,11 +3,11 @@ import StepCard from '../components/ui/step-card.tsx'
 import { Button } from '@/components/ui/button'
 import { WalletButton } from '@/components/wallet/wallet-button.tsx'
 import { useWallet } from '@/hooks/useWallet'
-import { useNftHubContract } from '@/hooks/useNftHubContract.ts'
+import { useEthContract } from '@/hooks/useEthContract.ts'
 
 export default function Home() {
   const { isConnected } = useWallet()
-  const { isRegistered } = useNftHubContract()
+  const { isRegistered } = useEthContract()
 
   return (
     <div className="min-h-screen bg-background">

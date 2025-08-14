@@ -1,4 +1,4 @@
-import {Inject, Injectable, Logger} from '@nestjs/common';
+import {Inject, Injectable, Logger, Param} from '@nestjs/common';
 import {CACHE_MANAGER} from "@nestjs/cache-manager";
 import type {Cache} from 'cache-manager';
 import {EthService} from '../eth/eth.service';
@@ -6,7 +6,7 @@ import {IpfsService} from '../ipfs/ipfs.service';
 import {NFT, NFTCollectionResponse} from "./nfts.types";
 import {ContractNFT} from "../eth/eth.types";
 
-const CACHE_ALL_TTL = 10 * 60 * 1000;
+const CACHE_ALL_TTL = 30 * 60 * 1000; // 30 minutes
 
 @Injectable()
 export class NftsService {
@@ -19,7 +19,7 @@ export class NftsService {
 	) {
 	}
 
-	async getAllNFTsUnified(): Promise<NFTCollectionResponse> {
+	async getAll(): Promise<NFTCollectionResponse> {
 		const cacheKey = 'nft:all';
 
 		let cached = await this.cacheManager.get<NFTCollectionResponse>(cacheKey);
@@ -44,7 +44,7 @@ export class NftsService {
 				}
 
 				const mintedNFT = mintedNFTs.find((nft: ContractNFT) => {
-					return parseInt(nft.tokenId) === i;
+					return nft.tokenURI === metadataURI;
 				});
 
 				let metadata = null;

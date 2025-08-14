@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useWallet } from '@/hooks/useWallet'
-import { useNftHubContract } from '@/hooks/useNftHubContract.ts'
+import { useEthContract } from '@/hooks/useEthContract.ts'
 import { Button } from '@/components/ui/button'
 import { WalletButton } from '@/components/wallet/wallet-button.tsx'
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react'
@@ -15,7 +15,7 @@ export default function Register() {
     isLoadingRegister,
     lastTxHash,
     register 
-  } = useNftHubContract()
+  } = useEthContract()
   const [error, setError] = useState<string>('')
   const [success, setSuccess] = useState<string>('')
 
@@ -71,7 +71,7 @@ export default function Register() {
           <div className="bg-card border border-border rounded-lg p-6">
             {!isConnected ? (
               <div className="text-center">
-                <h3 className="text-xl font-semibold mb-4">Connect Your Wallet</h3>
+                <h3 className="text-xl font-semibold mb-4 text-foreground">Connect Your Wallet</h3>
                 <p className="text-muted-foreground mb-6">
                   You need to connect your wallet to register
                 </p>

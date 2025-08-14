@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import {NFTCard} from './nft-card'
 import {getNfts} from '@/api/nfts-api'
-import {useNftHubContract} from '@/hooks/useNftHubContract'
+import {useEthContract} from '@/hooks/useEthContract.ts'
 import {Button} from "@/components/ui/button.tsx";
 import type {NFTCollectionResponse} from '@/types/nft'
 
@@ -11,7 +11,7 @@ export function NFTGallery() {
     const [error, setError] = useState<string | null>(null)
 
     const isConnected = true // Replace with actual connection check logic
-    const {isRegistered} = useNftHubContract()
+    const {isRegistered} = useEthContract()
 
     const fetchNFTs = async () => {
         try {
@@ -43,7 +43,10 @@ export function NFTGallery() {
 
     if (error) {
         return (
-            <ErrorFallback error={new Error(error)} resetErrorBoundary={fetchNFTs} />
+            <ErrorFallback
+                error={new Error(error)}
+                resetErrorBoundary={fetchNFTs}
+            />
         )
     }
 
@@ -93,9 +96,9 @@ export function NFTGallery() {
                     )}
 
                     {isConnected && !isRegistered && (
-                        <div className="bg-info/10 border border-info/20 rounded-lg p-4 mb-6">
-                            <p className="text-info">
-                                📝 You need to register before minting NFTs
+                        <div className="bg-info/10 border border-info/20 rounded-lg p-4 mb-6 border-primary">
+                            <p className="text-info text-muted-foreground">
+                                📝 You need to connect wallet and register before minting NFTs
                             </p>
                         </div>
                     )}

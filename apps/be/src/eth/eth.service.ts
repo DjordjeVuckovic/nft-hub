@@ -66,26 +66,70 @@ export class EthService implements OnModuleInit {
 			const totalSupply = await this.contract.getTotalSupply();
 			const nfts: ContractNFT[] = [];
 
-			for (let tokenId = 0; tokenId < Number(totalSupply); tokenId++) {
-				try {
-					const [owner, tokenURI] = await Promise.all([
-						this.contract.ownerOf(tokenId),
-						this.contract.tokenURI(tokenId)
-					]);
+			if (Number(totalSupply) === 0) {
+				return nfts;
+			}
 
-					nfts.push({
-						tokenId: tokenId.toString(),
-						owner,
-						tokenURI
+			// Batch the calls to avoid rate limiting
+			const batchSize = 5;
+			for (let i = 1; i <= Number(totalSupply); i += batchSize) {
+				const batch: ContractNFT[] = [];
+
+				for (let tokenId = i; tokenId < i + batchSize && tokenId <= Number(totalSupply); tokenId++) {
+					const minted = await this.getMintedNFTData(tokenId)
+
+					if (minted) {
+						batch.push(minted);
+					}
+				}
+
+				try {
+					const results = await Promise.allSettled(batch);
+
+					results.forEach((result, index) => {
+						if (result.status === 'fulfilled' && result.value) {
+							nfts.push(result.value);
+						} else if (result.status === 'rejected') {
+							this.logger.warn(`Failed to get token ${i + index}:`, result.reason);
+						}
 					});
-				} catch (tokenError) {
-					this.logger.warn(`Token ${tokenId} does not exist:`, tokenError.message);
+
+					// Add delay between batches to respect rate limits
+					if (i + batchSize <= Number(totalSupply)) {
+						await new Promise(resolve => setTimeout(resolve, 200));
+					}
+				} catch (batchError) {
+					this.logger.error(`Batch failed for tokens ${i}-${Math.min(i + batchSize - 1, Number(totalSupply))}:`, batchError);
 				}
 			}
 
 			return nfts;
 		} catch (error) {
+			this.logger.error('Failed to get minted NFTs:', error);
 			throw new Error(`Failed to get minted NFTs: ${error.message}`);
+		}
+	}
+
+	private async getMintedNFTData(tokenId: number): Promise<ContractNFT | null> {
+		try {
+			const [owner, tokenURI] = await Promise.all([
+				this.contract.ownerOf(tokenId),
+				this.contract.tokenURI(tokenId)
+			]);
+
+			return {
+				tokenId: tokenId.toString(),
+				owner,
+				tokenURI
+			};
+		} catch (error) {
+			if (error.message?.includes('Too Many Requests')) {
+				// Wait and retry once
+				await new Promise(resolve => setTimeout(resolve, 1000));
+				return this.getMintedNFTData(tokenId);
+			}
+			this.logger.warn(`Token ${tokenId} does not exist or failed:`, error.message);
+			return null;
 		}
 	}
 

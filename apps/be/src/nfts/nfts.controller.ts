@@ -9,7 +9,7 @@ export class NftsController {
 
 	@Get()
 	async getAllNFTsUnified(): Promise<NFTCollectionResponse> {
-		return this.nftsService.getAllNFTsUnified();
+		return this.nftsService.getAll();
 	}
 
 	@Delete('cache')

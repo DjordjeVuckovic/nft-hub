@@ -5,6 +5,8 @@ import nftHubABI from '@/eth/abi/nft-hub.abi.json'
 import {environment} from "@/config/env.ts";
 
 const CONTRACT_ADDRESS = environment.ETH_CONTRACT_ADDRESS
+const REGISTER_GAS_LIMIT = 100_000
+const MINT_GAS_LIMIT = 300_000
 
 interface UseNftHubReturn {
   isRegistered: boolean
@@ -26,7 +28,7 @@ interface UseNftHubReturn {
   refresh: () => Promise<void>
 }
 
-export function useNftHubContract(): UseNftHubReturn {
+export function useEthContract(): UseNftHubReturn {
   const { isConnected, account, provider, signer } = useWallet()
 
   const [isRegistered, setIsRegistered] = useState(false)
@@ -116,14 +118,13 @@ export function useNftHubContract(): UseNftHubReturn {
 
       const tx = await contract.register({
         value: fee,
-        gasLimit: 100000
+        gasLimit: REGISTER_GAS_LIMIT
       })
 
       setLastTxHash(tx.hash)
       const receipt = await tx.wait()
 
       if (receipt.status === 1) {
-        // Update local state immediately
         setIsRegistered(true)
         return { success: true, txHash: tx.hash }
       } else {
@@ -181,7 +182,7 @@ export function useNftHubContract(): UseNftHubReturn {
 
       const tx = await contract.mint(metadataIndex, {
         value: fee,
-        gasLimit: 150_000
+        gasLimit: MINT_GAS_LIMIT
       })
 
       setLastTxHash(tx.hash)

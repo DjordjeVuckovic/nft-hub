@@ -11,7 +11,6 @@ export async function loadNftMetadataUris() {
   try {
     const rawData = await fs.readFile(nftDataPath, "utf8");
     const nftData = JSON.parse(rawData);
-    console.log(`Loaded ${nftData.length} NFT metadata URIs`);
 
     return nftData.map(nft => nft.metadataUri);
   } catch (error) {

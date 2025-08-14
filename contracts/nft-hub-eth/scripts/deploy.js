@@ -29,12 +29,6 @@ async function main() {
   console.log("Registration fee:", await nftHub.registrationFee());
   console.log("Minting fee:", await nftHub.mintingFee());
   console.log("Contract owner:", await nftHub.owner());
-  console.log("Metadata URIs count:", metadataURIs.length);
-
-  if (metadataURIs.length > 0) {
-    console.log("First metadata URI:", metadataURIs[0]);
-    console.log("Last metadata URI:", metadataURIs[metadataURIs.length - 1]);
-  }
 
   return {
     nftHub,
