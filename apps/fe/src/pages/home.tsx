@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import StepCard from '../components/ui/step-card.tsx'
 import { Button } from '@/components/ui/button'
 import { WalletButton } from '@/components/wallet/wallet-button.tsx'
+import { NFTHomeHeader } from '@/components/nft/nft-home-header.tsx'
+import { NFTPreviewGrid } from '@/components/nft/nft-preview-grid'
 import { useWallet } from '@/hooks/useWallet'
 import { useEthContract } from '@/hooks/useEthContract.ts'
 
@@ -70,26 +72,11 @@ export default function Home() {
         </div>
 
         <div className="bg-card border border-border rounded-lg p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-card-foreground">NFT Gallery</h2>
-            <Link 
-              to="/gallery"
-              className="text-primary hover:text-primary/80 transition-colors"
-            >
-              View All →
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div className="bg-muted rounded-lg p-4 border border-border hover:border-primary/50 transition-colors">
-              <div className="aspect-square bg-background rounded-lg mb-3 flex items-center justify-center border border-border">
-                <span className="text-muted-foreground">NFT Preview</span>
-              </div>
-              <h4 className="font-medium mb-1 text-foreground">Sample NFT</h4>
-              <p className="text-sm text-muted-foreground">Creator: 0x...</p>
-            </div>
-          </div>
+          <NFTHomeHeader title="NFT Gallery" />
+          <NFTPreviewGrid />
         </div>
       </div>
     </div>
   )
 }
+

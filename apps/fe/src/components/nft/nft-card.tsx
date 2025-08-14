@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { NFT } from '@/types/nft'
 import { useEthContract } from '@/hooks/useEthContract.ts'
 import { getNftImage } from '@/api/nfts-api'
+import {useWallet} from "@/hooks/useWallet.ts";
 
 interface NFTCardProps {
   nft: NFT
@@ -12,6 +13,7 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [imageError, setImageError] = useState(false)
   const { mint, isRegistered, mintingFee } = useEthContract()
+  const {getEthScanUrl} = useWallet()
 
   const handleMint = async () => {
     if (!isRegistered || nft.isMinted) return
@@ -40,8 +42,8 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
       {/* Image Section */}
       <div className="relative aspect-square bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
         {nft.metadata?.image && !imageError ? (
-          <img 
-            src={getNftImage(nft.metadata.image)} 
+          <img
+            src={getNftImage(nft.metadata.image)}
             alt={nft.metadata.name || 'NFT'}
             className="w-full h-full object-cover"
             onError={() => setImageError(true)}
@@ -57,7 +59,7 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
             </div>
           </div>
         )}
-        
+
         {/* Status Badge */}
         <div className="absolute top-3 left-3">
           <span className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -92,12 +94,12 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
               {nft.tokenId || `#${nft.index}`}
             </span>
           </div>
-          
+
           {nft.isMinted && nft.owner && (
             <div className="flex justify-between items-center text-sm">
               <span className="text-muted-foreground">Owner:</span>
-              <a 
-                href={`https://etherscan.io/address/${nft.owner}`}
+              <a
+                href={`${getEthScanUrl(nft.owner)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:text-primary/80 transition-colors font-medium"
@@ -121,7 +123,7 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
             <p className="text-sm text-muted-foreground mb-2">Traits:</p>
             <div className="flex flex-wrap gap-1">
               {nft.metadata.attributes.slice(0, 3).map((attr, index) => (
-                <span 
+                <span
                   key={index}
                   className="px-2 py-1 text-xs bg-muted rounded-md text-muted-foreground"
                 >
@@ -140,14 +142,14 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
         {/* Action Button - Pushed to bottom */}
         <div className="mt-auto">
           {nft.isMinted ? (
-            <button 
+            <button
               className="w-full bg-muted text-muted-foreground px-4 py-2 rounded-lg cursor-not-allowed"
               disabled
             >
               {nft.owner ? formatAddress(nft.owner) : 'Minted'}
             </button>
           ) : (
-            <button 
+            <button
               onClick={handleMint}
               disabled={!isRegistered || isLoading}
               className={`w-full px-4 py-2 rounded-lg font-medium transition-colors ${

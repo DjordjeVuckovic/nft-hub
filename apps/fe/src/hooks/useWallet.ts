@@ -1,4 +1,5 @@
 import { useAuth } from '@/contexts/auth-context.tsx'
+import {shortenAddress} from "@/util/strings.ts";
 
 export function useWallet() {
   const auth = useAuth()
@@ -20,14 +21,23 @@ export function useWallet() {
     switchNetwork: auth.switchNetwork,
     getCurrentNetwork: auth.getCurrentNetwork,
 
-    getShortAddress: (address?: string | null) => {
-      const addr = address || auth.account
-      if (!addr) return null
-      return `${addr.slice(0, 6)}...${addr.slice(-4)}`
-    },
+    getShortAddress: (address?: string | null) => shortenAddress(address || auth.account),
 
     isWalletAvailable: () => {
       return typeof window !== 'undefined' && !!window.ethereum
     },
+
+		getEthScanUrl: (address?: string | null) => {
+			switch (auth.currentNetwork?.name) {
+				case 'ethereum':
+					return `https://etherscan.io/address/${address}`;
+				case 'goerli':
+					return `https://goerli.etherscan.io/address/${address}`;
+				case 'sepolia':
+					return `https://sepolia.etherscan.io/address/${address}`;
+				default:
+					return `https://etherscan.io/address/${address}`;
+			}
+		}
   }
 }

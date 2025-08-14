@@ -2,7 +2,7 @@ import { useWallet } from '@/hooks/useWallet'
 import { Button } from '@/components/ui/button'
 import { Wallet, LogOut, Loader2 } from 'lucide-react'
 
-interface WalletButtonProps {
+type WalletButtonProps = {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
   size?: 'default' | 'sm' | 'lg' | 'icon'
   className?: string

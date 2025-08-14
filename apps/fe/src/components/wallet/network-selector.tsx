@@ -12,7 +12,7 @@ import {
 import { ChevronDown, Loader2, Globe, TestTube } from 'lucide-react'
 import { NETWORKS, getMainnetNetworks, getTestnetNetworks } from '@/config/networks'
 
-interface NetworkSelectorProps {
+type NetworkSelectorProps = {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
   size?: 'default' | 'sm' | 'lg' | 'icon'
 }
