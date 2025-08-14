@@ -1,40 +1,14 @@
-import {useState, useEffect} from 'react'
 import {NFTGrid} from './nft-grid'
-import {getNfts} from '@/api/nfts-api'
 import {useEthContract} from '@/hooks/useEthContract.ts'
-import type {NFTCollectionResponse} from '@/types/nft'
 import {useWallet} from "@/hooks/useWallet.ts";
 import {NftGalleryHeader} from "@/components/nft/nft-gallery-header.tsx";
+import {useQueryNFTs} from "@/hooks/useQueryNFTs.ts";
 
 export function NFTGallery() {
-    const [nftData, setNftData] = useState<NFTCollectionResponse | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    const {nftData, error, loading, refresh} = useQueryNFTs()
 
     const {isRegistered} = useEthContract()
     const {isConnected} = useWallet()
-
-    const fetchNFTs = async () => {
-        try {
-            setLoading(true)
-            setError(null)
-            const data = await getNfts()
-            setNftData(data)
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to fetch NFTs')
-            console.error('Failed to fetch NFTs:', err)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        fetchNFTs()
-    }, [])
-
-    const handleMintSuccess = () => {
-        fetchNFTs()
-    }
 
     const availableCount = nftData?.nfts.filter(nft => !nft.isMinted).length || 0
     const mintedCount = nftData?.nfts.filter(nft => nft.isMinted).length || 0
@@ -75,8 +49,8 @@ export function NFTGallery() {
                         loading={loading}
                         error={error}
                         showRefresh={true}
-                        onRefresh={fetchNFTs}
-                        onMintSuccess={handleMintSuccess}
+                        onRefresh={refresh}
+                        onMintSuccess={refresh}
                     />
                 </div>
             </div>

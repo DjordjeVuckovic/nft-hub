@@ -3,8 +3,8 @@ import {environment} from "@/config/env.ts";
 
 const BACKEND_URL = environment.BACKEND_URL;
 
-export const getNfts = async (): Promise<NFTCollectionResponse> => {
-	const response = await fetch(`${BACKEND_URL}/api/v1/nfts`, {
+export const getNfts = async (useCache: boolean = true): Promise<NFTCollectionResponse> => {
+	const response = await fetch(`${BACKEND_URL}/api/v1/nfts?useCache=${useCache}`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -21,12 +21,12 @@ export const getNfts = async (): Promise<NFTCollectionResponse> => {
 
 export const getNftImage = (cidOrUri: string): string => {
 	let cid: string;
-	
+
 	if (cidOrUri.startsWith('ipfs://')) {
 		cid = cidOrUri.replace('ipfs://', '');
 	} else {
 		cid = cidOrUri;
 	}
-	
+
 	return `${BACKEND_URL}/api/v1/nfts/image/${cid}`;
 }

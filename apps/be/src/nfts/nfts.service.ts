@@ -19,12 +19,13 @@ export class NftsService {
 	) {
 	}
 
-	async getAll(): Promise<NFTCollectionResponse> {
+	async getAll(useCache: boolean): Promise<NFTCollectionResponse> {
 		const cacheKey = 'nft:all';
-
-		let cached = await this.cacheManager.get<NFTCollectionResponse>(cacheKey);
-		if (cached) {
-			return cached;
+		if (useCache) {
+			let cached = await this.cacheManager.get<NFTCollectionResponse>(cacheKey);
+			if (cached) {
+				return cached;
+			}
 		}
 
 		try {

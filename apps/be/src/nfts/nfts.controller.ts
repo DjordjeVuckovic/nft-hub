@@ -14,8 +14,8 @@ export class NftsController {
 	}
 
 	@Get()
-	async getAllNFTsUnified(): Promise<NFTCollectionResponse> {
-		return this.nftsService.getAll();
+	async getAll(@Query('useCache') useCache: boolean = true): Promise<NFTCollectionResponse> {
+		return this.nftsService.getAll(useCache);
 	}
 
 	@Get('image/:cid')
