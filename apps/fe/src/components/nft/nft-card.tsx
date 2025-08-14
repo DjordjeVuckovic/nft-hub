@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { NFT } from '@/types/nft'
 import { useEthContract } from '@/hooks/useEthContract.ts'
+import { getNftImage } from '@/api/nfts-api'
 
 interface NFTCardProps {
   nft: NFT
@@ -9,6 +10,7 @@ interface NFTCardProps {
 
 export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [imageError, setImageError] = useState(false)
   const { mint, isRegistered, mintingFee } = useEthContract()
 
   const handleMint = async () => {
@@ -37,11 +39,13 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
     <div className="bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-200 hover:shadow-lg group flex flex-col h-full">
       {/* Image Section */}
       <div className="relative aspect-square bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
-        {nft.metadata?.image ? (
+        {nft.metadata?.image && !imageError ? (
           <img 
-            src={nft.metadata.image} 
+            src={getNftImage(nft.metadata.image)} 
             alt={nft.metadata.name || 'NFT'}
             className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+            onLoad={() => setImageError(false)}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -49,7 +53,7 @@ export function NFTCard({ nft, onMintSuccess }: NFTCardProps) {
               <div className="w-16 h-16 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
                 <span className="text-2xl">🖼️</span>
               </div>
-              <span className="text-muted-foreground text-sm">NFT #{nft.index}</span>
+              <span className="text-muted-foreground text-sm">NFT #{nft.index + 1}</span>
             </div>
           </div>
         )}

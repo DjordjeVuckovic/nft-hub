@@ -18,3 +18,15 @@ export const getNfts = async (): Promise<NFTCollectionResponse> => {
 
 	return response.json();
 }
+
+export const getNftImage = (cidOrUri: string): string => {
+	let cid: string;
+	
+	if (cidOrUri.startsWith('ipfs://')) {
+		cid = cidOrUri.replace('ipfs://', '');
+	} else {
+		cid = cidOrUri;
+	}
+	
+	return `${BACKEND_URL}/api/v1/nfts/image/${cid}`;
+}
