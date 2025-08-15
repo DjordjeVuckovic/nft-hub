@@ -93,20 +93,15 @@ Create `.env` files in the appropriate directories(observe `.env.example` files 
 ```bash
 cd contracts/nft-hub-eth
 
-# Compile contracts
 npm run compile
 
-# Run tests
 npm run test
 
-# Deploy to localhost (requires hardhat node)
 npm run node
 npm run deploy:localhost
 
-# Deploy to testnet
 npm run deploy:test
 
-# Verify on Etherscan
 npm run verify:test
 ```
 
@@ -115,17 +110,13 @@ npm run verify:test
 ```bash
 cd apps/be
 
-# Start in development mode
 npm run dev
 
-# Run tests
 npm run test
 npm run test:e2e
 
-# Build for production
 npm run build
 
-# Lint and format
 npm run lint
 npm run format:check
 ```
@@ -135,16 +126,12 @@ npm run format:check
 ```bash
 cd apps/fe
 
-# Start development server
 npm run dev
 
-# Build for production
 npm run build
 
-# Preview production build
 npm run preview
 
-# Lint code
 npm run lint
 ```
 
@@ -157,10 +144,8 @@ npm run lint
 ### Run All Tests
 
 ```bash
-# Root level - runs all tests
 npm run test
 
-# Individual component tests
 npm run test:frontend
 npm run test:backend  
 npm run test:contracts
@@ -170,17 +155,15 @@ npm run test:contracts
 
 ```bash
 cd contracts/nft-hub-eth
-npm run test              # Run test suite
-npm run coverage          # Generate coverage report
+npm run test              
+npm run coverage          
 ```
 
 ### Backend Testing
 
 ```bash
 cd apps/be
-npm run test              # Unit tests
-npm run test:e2e          # End-to-end tests
-npm run test:cov          # Coverage report
+npm run test              
 ```
 
 ##  Build & Deployment
@@ -196,10 +179,8 @@ npm run build
 ```bash
 cd contracts/nft-hub-eth
 
-# Deploy to Sepolia testnet
 npm run deploy:test
 
-# Verify contract on Etherscan
 npm run verify:test
 ```
 
@@ -208,10 +189,8 @@ npm run verify:test
 After deploying contracts, copy the ABI to frontend and backend:
 
 ```bash
-# Copy ABI to backend
 npm run cp-abi:be
 
-# Copy ABI to frontend  
 npm run cp-abi:fe
 ```
 
@@ -246,14 +225,6 @@ cd tools/nft-seeder
 npm run seed
 ```
 
-### ABI Management
-
-Automated ABI copying from compiled contracts:
-```bash
-npm run cp-abi:be    # Copy to backend
-npm run cp-abi:fe    # Copy to frontend
-```
-
 ## Frontend Features
 
 ### Pages & Components
@@ -271,7 +242,7 @@ npm run cp-abi:fe    # Copy to frontend
 - **NFT Cards** - Rich NFT display with metadata
 - **Navigation** - Responsive navigation with wallet status
 
-## 🏃‍♂️ Workflow
+## Workflow
 
 ### Complete User Journey
 
@@ -289,7 +260,7 @@ npm run cp-abi:fe    # Copy to frontend
 4. **Start Services** - Launch backend event listener and frontend
 5. **Test Integration** - Verify end-to-end functionality
 
-## 🔍 Code Quality
+## Code Quality
 
 ### Linting & Formatting
 
