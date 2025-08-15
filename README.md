@@ -10,6 +10,8 @@ This monorepo contains three interconnected components:
 - **`apps/backend/`** - NestJS backend API server with blockchain event listening
 - **`contracts/`** - Solidity smart contracts for NFT operations
 - **`tools/`** - Developer tools and utilities
+- **`docker-compose.yml`** - Docker configuration for MongoDB database
+- **`.github/workflows`** - CI pipelines for backend, frontend, and contract
 
 ## Features
 
