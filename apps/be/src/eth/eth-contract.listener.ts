@@ -7,11 +7,12 @@ import {EthContractFactory} from "./eth.factory";
 import {EthEventHandler, ContractEventData} from "../events/events.types";
 
 @Injectable()
-export class EthEventListener implements OnModuleDestroy {
-	private readonly logger = new Logger(EthEventListener.name);
+export class EthContractListener implements OnModuleDestroy {
+	private readonly logger = new Logger(EthContractListener.name);
 	private contract: Contract;
 	private _isListening = false;
 	private lastProcessedBlock: number;
+	private eventNames: EventType[] = [];
 
 	private readonly provider: ethers.JsonRpcProvider;
 
@@ -46,12 +47,12 @@ export class EthEventListener implements OnModuleDestroy {
 
 			this.logger.log(`Starting event sync from block ${startBlock} to ${currentBlock}`);
 
-			await this.fetchPastEvents({
+			this.fetchPastEvents({
 				fromBlock: startBlock,
 				toBlock: currentBlock
-			}, pastEventHandler);
+			}, pastEventHandler).then();
 
-			await this.listenToRealtimeEvents(realTimeHandlers);
+			this.listenToRealtimeEvents(realTimeHandlers).then();
 
 			this.logger.log('Event listening started successfully');
 		} catch (error) {
@@ -139,6 +140,7 @@ export class EthEventListener implements OnModuleDestroy {
 	private async listenToRealtimeEvents(realTimeHandlers: Map<string, EthEventHandler>) {
 		this.logger.log('Starting real-time event listening...');
 
+		this.eventNames = Array.from(realTimeHandlers.keys()) as EventType[];
 		try {
 
 			for (const [eventName, handler] of realTimeHandlers.entries()) {
@@ -177,5 +179,15 @@ export class EthEventListener implements OnModuleDestroy {
 
 	async onModuleDestroy() {
 		this._isListening = false;
+
+		for (const eventName of this.eventNames) {
+			try {
+				await this.contract.off(eventName);
+				this.logger.log(`Removed listener for event: ${eventName}`);
+			} catch (error) {
+				this.logger.error(`Failed to remove listener for ${eventName}:`, error);
+			}
+		}
+
 	}
 }

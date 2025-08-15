@@ -1,11 +1,11 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { EthService } from './eth.service';
-import {EthEventListener} from "./eth-event.listener";
+import {EthContractListener} from "./eth-contract.listener";
 import { EventsModule } from '../events/events.module';
 
 @Module({
   imports: [],
-  providers: [EthService, EthEventListener],
-  exports: [EthService, EthEventListener]
+  providers: [EthService, EthContractListener],
+  exports: [EthService, EthContractListener]
 })
 export class EthModule {}

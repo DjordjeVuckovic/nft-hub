@@ -123,4 +123,13 @@ export class EthService {
 		}
 	}
 
+	async getCurrentBlockNumber(): Promise<number> {
+		try {
+			return await this.provider.getBlockNumber();
+		} catch (error) {
+			this.logger.error('Failed to get current block number:', error);
+			throw new Error(`Failed to get current block number: ${error.message}`);
+		}
+	}
+
 }

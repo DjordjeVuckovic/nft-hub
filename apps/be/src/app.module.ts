@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { IpfsModule } from './ipfs/ipfs.module';
 import { ConfigModule } from './config/config.module';
@@ -10,6 +11,7 @@ import {CacheModule} from "@nestjs/cache-manager";
 @Module({
   imports: [
 	  ConfigModule,
+	  MongooseModule.forRoot(process.env.MONGO_URI || 'mongodb://localhost:27017/ntf_db'),
 	  IpfsModule,
 	  EventsModule,
 	  NftsModule,

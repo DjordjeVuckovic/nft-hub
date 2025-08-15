@@ -52,6 +52,7 @@ export interface ContractEventData {
 	event: EventType;
 	transactionHash: string;
 	blockNumber: number;
+	logIndex?: number;
 	returnValues: Record<string, any>;
 	[key: string]: any;
 }
