@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { IpfsModule } from './ipfs/ipfs.module';
 import { ConfigModule } from './config/config.module';
 import { EventsModule } from './events/events.module';
@@ -23,6 +22,5 @@ import {CacheModule} from "@nestjs/cache-manager";
 	  })
   ],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

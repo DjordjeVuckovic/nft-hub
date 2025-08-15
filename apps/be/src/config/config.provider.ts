@@ -26,7 +26,7 @@ export const ConfigProvider = {
 			ethConfig: {
 				rpcUrl: process.env.ETH_RPC_URL || 'https://sepolia.infura.io/v3/YOUR_INFURA_API_KEY',
 				wsUrl: process.env.ETH_WS_URL || 'wss://sepolia.infura.io/ws/v3/YOUR_INFURA_API_KEY',
-				contractAddress: process.env.ETH_CONTRACT_ADDRESS || '0xYourContractAddress'
+				contractAddress: process.env.ETH_CONTRACT_ADDRESS || '0x7ab383C0389eEffE0073838C9016151731136143'
 			}
 		};
 	},

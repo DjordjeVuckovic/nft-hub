@@ -2,10 +2,10 @@ import {NFTGrid} from './nft-grid'
 import {useEthContract} from '@/hooks/useEthContract.ts'
 import {useWallet} from "@/hooks/useWallet.ts";
 import {NftGalleryHeader} from "@/components/nft/nft-gallery-header.tsx";
-import {useQueryNFTs} from "@/hooks/useQueryNFTs.ts";
+import {useQueryNfts} from "@/hooks/useQueryNfts.ts";
 
 export function NFTGallery() {
-    const {nftData, error, loading, refresh} = useQueryNFTs()
+    const {nftData, error, loading, refresh} = useQueryNfts()
 
     const {isRegistered} = useEthContract()
     const {isConnected} = useWallet()

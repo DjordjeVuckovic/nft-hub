@@ -1,12 +1,12 @@
 import { NFTGrid } from './nft-grid'
-import {useQueryNFTs} from "@/hooks/useQueryNFTs.ts";
+import {useQueryNfts} from "@/hooks/useQueryNfts.ts";
 
 interface NFTPreviewGridProps {
   limit?: number
 }
 
 export function NFTPreviewGrid({ limit = 4 }: NFTPreviewGridProps) {
-    const {nftData, error, loading, refresh} = useQueryNFTs()
+    const {nftData, error, loading, refresh} = useQueryNfts()
 
   return (
     <NFTGrid 

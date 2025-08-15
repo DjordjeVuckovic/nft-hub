@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { EthService } from './eth.service';
-import { EthListener } from "./eth.listener";
+import {EthEventListener} from "./eth-event.listener";
 
 @Module({
-  providers: [EthService, EthListener],
-  exports: [EthService]
+  providers: [EthService, EthEventListener],
+  exports: [EthService, EthEventListener]
 })
 export class EthModule {}

@@ -2,7 +2,7 @@ import {getNfts} from "@/api/nfts-api.ts";
 import {useEffect, useState} from "react";
 import type {NFTCollectionResponse} from "@/types/nft.ts";
 
-export function useQueryNFTs() {
+export function useQueryNfts() {
 	const [nftData, setNftData] = useState<NFTCollectionResponse | null>()
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)

@@ -2,38 +2,18 @@ import {Injectable, Inject, OnModuleInit, Logger} from '@nestjs/common';
 import { ethers } from 'ethers';
 import { CONFIG_PROVIDER } from '../config/config.provider';
 import type { AppConfig } from '../config/config.types';
-import nftAbi from './abi/nft-hub.abi.json';
 import {BasicCollectionInfo, ContractNFT} from "./eth.types";
+import {EthContractFactory} from "./eth.factory";
 
 @Injectable()
-export class EthService implements OnModuleInit {
+export class EthService {
 	private readonly provider: ethers.JsonRpcProvider;
 	private contract: ethers.Contract;
 	private readonly logger = new Logger(EthService.name);
 
 	constructor(@Inject(CONFIG_PROVIDER) private config: AppConfig) {
 		this.provider = new ethers.JsonRpcProvider(this.config.ethConfig.rpcUrl);
-	}
-
-	async onModuleInit() {
-		this.initContract();
-	}
-
-	private initContract() {
-		try {
-
-			const abi = Array.isArray(nftAbi) ? nftAbi : (nftAbi as any).default || nftAbi;
-
-			this.contract = new ethers.Contract(
-				this.config.ethConfig.contractAddress,
-				abi,
-				this.provider
-			);
-			this.logger.log('Contract initialized successfully');
-		} catch (error) {
-			this.logger.error('Failed to initialize contract:', error);
-			throw new Error(`Failed to initialize contract: ${error.message}`);
-		}
+		this.contract = EthContractFactory.createContract(this.provider, this.config.ethConfig.contractAddress);
 	}
 
 	async getCollectionInfo(): Promise<BasicCollectionInfo> {
@@ -125,7 +105,7 @@ export class EthService implements OnModuleInit {
 		} catch (error) {
 			if (error.message?.includes('Too Many Requests')) {
 				// Wait and retry once
-				await new Promise(resolve => setTimeout(resolve, 1000));
+				await new Promise(resolve => setTimeout(resolve, 5_000));
 				return this.getMintedNFTData(tokenId);
 			}
 			this.logger.warn(`Token ${tokenId} does not exist or failed:`, error.message);
