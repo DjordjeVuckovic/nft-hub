@@ -1,19 +1,10 @@
-import {forwardRef, Inject, Injectable, Logger, OnModuleDestroy} from '@nestjs/common';
+import {Inject, Injectable, Logger, OnModuleDestroy} from '@nestjs/common';
 import {CONFIG_PROVIDER} from '../config/config.provider';
 import type {AppConfig} from '../config/config.types';
-import {EventType} from "../events/events.types";
+import {BlockRange, EventType} from "../events/events.types";
 import {Contract, ethers} from 'ethers';
-import {EventsService} from '../events/events.service';
 import {EthContractFactory} from "./eth.factory";
-
-export interface ContractEventData {
-	event: EventType;
-	transactionHash: string;
-	blockNumber: number;
-	returnValues: Record<string, any>;
-
-	[key: string]: any;
-}
+import {EthEventHandler, ContractEventData} from "../events/events.types";
 
 @Injectable()
 export class EthEventListener implements OnModuleDestroy {
@@ -25,18 +16,15 @@ export class EthEventListener implements OnModuleDestroy {
 	private readonly provider: ethers.JsonRpcProvider;
 
 	constructor(
-		@Inject(CONFIG_PROVIDER) private config: AppConfig,
-		@Inject(forwardRef(() => EventsService)) private eventsService: EventsService
+		@Inject(CONFIG_PROVIDER) private config: AppConfig
 	) {
 		try {
 			const rpcUrl = this.config.ethConfig.rpcUrl;
 			this.provider = new ethers.JsonRpcProvider(rpcUrl);
 
-			const contractAddress = this.config.ethConfig.contractAddress;
+			this.contract = EthContractFactory.createContract(this.provider, this.config.ethConfig.contractAddress);
 
-			this.contract = EthContractFactory.createContract(this.provider, contractAddress);
-
-			this.logger.log(`Contract initialized at address: ${contractAddress}`);
+			this.logger.log(`Contract initialized at address: ${this.config.ethConfig.contractAddress}`);
 		} catch (error) {
 			this.logger.error('Failed to initialize contract:', error);
 			throw error;
@@ -44,7 +32,7 @@ export class EthEventListener implements OnModuleDestroy {
 	}
 
 
-	public async startEventListening() {
+	public async startEventListening(realTimeHandlers: Map<string, EthEventHandler>, pastEventHandler?: EthEventHandler) {
 		if (this.isListening) {
 			this.logger.warn('Already listening to events');
 			return;
@@ -53,14 +41,17 @@ export class EthEventListener implements OnModuleDestroy {
 		try {
 			this._isListening = true;
 
-			const startBlock = this.config.ethConfig.startBlock; // block kada je deployovan contract
+			const startBlock = this.config.ethConfig.startBlock;
 			const currentBlock = await this.provider.getBlockNumber();
 
 			this.logger.log(`Starting event sync from block ${startBlock} to ${currentBlock}`);
 
-			await this.fetchPastEvents(startBlock, currentBlock);
+			await this.fetchPastEvents({
+				fromBlock: startBlock,
+				toBlock: currentBlock
+			}, pastEventHandler);
 
-			await this.listenToRealtimeEvents();
+			await this.listenToRealtimeEvents(realTimeHandlers);
 
 			this.logger.log('Event listening started successfully');
 		} catch (error) {
@@ -70,7 +61,12 @@ export class EthEventListener implements OnModuleDestroy {
 		}
 	}
 
-	private async fetchPastEvents(fromBlock: number, toBlock: number) {
+	private async fetchPastEvents({fromBlock, toBlock}: BlockRange, eventHandler?: EthEventHandler) {
+		if(!eventHandler) {
+			this.logger.log('No past event handler provided, skipping past events sync');
+			return;
+		}
+
 		const CHUNK_SIZE = this.config.ethConfig.rpcBlockLimit;
 		let currentFromBlock = fromBlock;
 
@@ -113,46 +109,13 @@ export class EthEventListener implements OnModuleDestroy {
 								returnValues: parsedLog.args
 							};
 
-							this.eventsService.handleContractEvent(contractEventData);
-
-							// OVO JE PRIMER LOGA, parseLog na osnovu prvog topica (event sig) uz pomoc abi-a izvuce koji je event
-							// LogDescription {
-							// 	fragment: EventFragment {
-							// 	  type: 'event',
-							// 	  inputs: [ [ParamType], [ParamType] ],
-							// 	  name: 'UserRegistered',
-							// 	  anonymous: false
-							// 	},
-							// 	name: 'UserRegistered',
-							// 	signature: 'UserRegistered(address,uint256)',
-							// 	topic: '0xe29d35093005f4d575e1003753426b57a7f64378ba73332eef9c6ccc2b8decd6',
-							// 	args: Result(2) [
-							// 	  '0x95769019F852E5ae868c4f0ECA659F98937ce9bC',
-							// 	  1755047496n
-							// 	]
-							//   }
-							//   Log {
-							// 	provider: JsonRpcProvider {},
-							// 	transactionHash: '0x3aa055ccbd15b3f8a7eb58252daceff5aff3c0d8f8fd7b6f362c105011e63b45',
-							// 	blockHash: '0x46edfe655c064e0abf5b1f2146c2ee96d322323041c210aa16358e220edb12d4',
-							// 	blockNumber: 8971971,
-							// 	removed: false,
-							// 	address: '0x7ab383C0389eEffE0073838C9016151731136143',
-							// 	data: '0x00000000000000000000000000000000000000000000000000000000689be648',
-							// 	topics: [
-							// 	  '0xe29d35093005f4d575e1003753426b57a7f64378ba73332eef9c6ccc2b8decd6',
-							// 	  '0x00000000000000000000000095769019f852e5ae868c4f0eca659f98937ce9bc'
-							// 	],
-							// 	index: 70,
-							// 	transactionIndex: 46
-							//   }
+							eventHandler(contractEventData)
 
 						} else {
-							console.log(`Could not parse log:`, log);
+							this.logger.warn(`Failed to parse log: ${log.transactionHash} at block ${log.blockNumber}`);
 						}
 					} catch (parseError) {
-						console.log(`Failed to parse log:`, parseError);
-						console.log(`Raw log:`, log);
+						this.logger.error(`Error parsing log ${log.transactionHash} at block ${log.blockNumber}:`, parseError);
 					}
 				}
 
@@ -173,22 +136,13 @@ export class EthEventListener implements OnModuleDestroy {
 		this.logger.log(`Past event sync completed. Last processed block: ${this.lastProcessedBlock}`);
 	}
 
-	private async listenToRealtimeEvents() {
+	private async listenToRealtimeEvents(realTimeHandlers: Map<string, EthEventHandler>) {
 		this.logger.log('Starting real-time event listening...');
 
 		try {
-			// TODO: ovo mozes prebaciti negde lepse
-			const eventsToListen: EventType[] = [
-				'UserRegistered',
-				'NFTMinted',
-				'UserBlacklisted',
-				'UserRemovedFromBlacklist',
-				'FeesUpdated'
-			];
 
-			this.logger.log(`Setting up listeners for ${eventsToListen.length} events`);
+			for (const [eventName, handler] of realTimeHandlers.entries()) {
 
-			for (const eventName of eventsToListen) {
 				try {
 					this.contract.on(eventName, async (...args) => {
 
@@ -201,48 +155,7 @@ export class EthEventListener implements OnModuleDestroy {
 							returnValues: eventPayload.args
 						};
 
-						this.eventsService.handleContractEvent(contractEventData);
-
-						// Logovano:  [
-						// '0x0E5522835509a807D5CD19358dc22E23d2F11AD5',
-						// 1755272424n,
-						// ContractEventPayload {
-						// 	filter: 'UserRegistered',
-						// 	emitter: Contract {
-						// 	target: '0x7ab383C0389eEffE0073838C9016151731136143',
-						// 	interface: [Interface],
-						// 	runner: JsonRpcProvider {},
-						// 	filters: {},
-						// 	fallback: null,
-						// 	[Symbol(_ethersInternal_contract)]: {}
-						// 	},
-						// 	log: EventLog {
-						// 	provider: JsonRpcProvider {},
-						// 	transactionHash: '0xc0647289c064c35c77ab84a782dd8809e98056a2278dc0b07278409afcceb1b3',
-						// 	blockHash: '0x812c82d7742e2959f8c30fcb5adf6d43400b1cb76f486b559033089d77bc8718',
-						// 	blockNumber: 8990556,
-						// 	removed: false,
-						// 	address: '0x7ab383C0389eEffE0073838C9016151731136143',
-						// 	data: '0x00000000000000000000000000000000000000000000000000000000689f54e8',
-						// 	topics: [Array],
-						// 	index: 61,
-						// 	transactionIndex: 29,
-						// 	interface: [Interface],
-						// 	fragment: [EventFragment],
-						// 	args: [Result]
-						// 	},
-						// 	args: Result(2) [
-						// 	'0x0E5522835509a807D5CD19358dc22E23d2F11AD5',
-						// 	1755272424n
-						// 	],
-						// 	fragment: EventFragment {
-						// 	type: 'event',
-						// 	inputs: [Array],
-						// 	name: 'UserRegistered',
-						// 	anonymous: false
-						// 	}
-						// }
-						// ]
+						await handler(contractEventData);
 
 					});
 
@@ -251,8 +164,6 @@ export class EthEventListener implements OnModuleDestroy {
 					this.logger.warn(`Failed to register listener for ${eventName}:`, eventError);
 				}
 			}
-
-			this.logger.log(`Listening to contract events in real-time`);
 
 		} catch (error) {
 			this.logger.error('Failed to set up real-time event listeners:', error);

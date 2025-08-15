@@ -4,7 +4,7 @@ import {EthEventListener} from "./eth-event.listener";
 import { EventsModule } from '../events/events.module';
 
 @Module({
-  imports: [forwardRef(() => EventsModule)],
+  imports: [],
   providers: [EthService, EthEventListener],
   exports: [EthService, EthEventListener]
 })

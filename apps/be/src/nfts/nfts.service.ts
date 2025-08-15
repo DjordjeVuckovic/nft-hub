@@ -6,7 +6,7 @@ import {IpfsService} from '../ipfs/ipfs.service';
 import {NFT, NFTCollectionResponse} from "./nfts.types";
 import {ContractNFT} from "../eth/eth.types";
 
-const CACHE_ALL_TTL = 30 * 60 * 1000; // 30 minutes
+const CACHE_ALL_TTL = 30 * 60 * 1000;
 
 @Injectable()
 export class NftsService {

@@ -1,0 +1,74 @@
+ Past log
+
+ LogDescription {
+ 	fragment: EventFragment {
+ 	  type: 'event',
+ 	  inputs: [ [ParamType], [ParamType] ],
+ 	  name: 'UserRegistered',
+ 	  anonymous: false
+ 	},
+ 	name: 'UserRegistered',
+ 	signature: 'UserRegistered(address,uint256)',
+ 	topic: '0xe29d35093005f4d575e1003753426b57a7f64378ba73332eef9c6ccc2b8decd6',
+ 	args: Result(2) [
+ 	  '0x95769019F852E5ae868c4f0ECA659F98937ce9bC',
+ 	  1755047496n
+ 	]
+   }
+   Log {
+ 	provider: JsonRpcProvider {},
+ 	transactionHash: '0x3aa055ccbd15b3f8a7eb58252daceff5aff3c0d8f8fd7b6f362c105011e63b45',
+ 	blockHash: '0x46edfe655c064e0abf5b1f2146c2ee96d322323041c210aa16358e220edb12d4',
+ 	blockNumber: 8971971,
+ 	removed: false,
+ 	address: '0x7ab383C0389eEffE0073838C9016151731136143',
+ 	data: '0x00000000000000000000000000000000000000000000000000000000689be648',
+ 	topics: [
+ 	  '0xe29d35093005f4d575e1003753426b57a7f64378ba73332eef9c6ccc2b8decd6',
+ 	  '0x00000000000000000000000095769019f852e5ae868c4f0eca659f98937ce9bc'
+ 	],
+ 	index: 70,
+ 	transactionIndex: 46
+   }
+
+   Live log
+ Logovano:  [
+ '0x0E5522835509a807D5CD19358dc22E23d2F11AD5',
+ 1755272424n,
+ ContractEventPayload {
+ 	filter: 'UserRegistered',
+ 	emitter: Contract {
+ 	target: '0x7ab383C0389eEffE0073838C9016151731136143',
+ 	interface: [Interface],
+ 	runner: JsonRpcProvider {},
+ 	filters: {},
+ 	fallback: null,
+ 	[Symbol(_ethersInternal_contract)]: {}
+ 	},
+ 	log: EventLog {
+ 	provider: JsonRpcProvider {},
+ 	transactionHash: '0xc0647289c064c35c77ab84a782dd8809e98056a2278dc0b07278409afcceb1b3',
+ 	blockHash: '0x812c82d7742e2959f8c30fcb5adf6d43400b1cb76f486b559033089d77bc8718',
+ 	blockNumber: 8990556,
+ 	removed: false,
+ 	address: '0x7ab383C0389eEffE0073838C9016151731136143',
+ 	data: '0x00000000000000000000000000000000000000000000000000000000689f54e8',
+ 	topics: [Array],
+ 	index: 61,
+ 	transactionIndex: 29,
+ 	interface: [Interface],
+ 	fragment: [EventFragment],
+ 	args: [Result]
+ 	},
+ 	args: Result(2) [
+ 	'0x0E5522835509a807D5CD19358dc22E23d2F11AD5',
+ 	1755272424n
+ 	],
+ 	fragment: EventFragment {
+ 	type: 'event',
+ 	inputs: [Array],
+ 	name: 'UserRegistered',
+ 	anonymous: false
+ 	}
+ }
+ ]

@@ -5,8 +5,8 @@ import { EthEventListener } from '../eth/eth-event.listener';
 
 @Module({
   providers: [
-    EthEventListener,
-    EventsService
+    EventsService,
+		EthEventListener
   ],
   controllers: [EventsController],
   exports: [EventsService]

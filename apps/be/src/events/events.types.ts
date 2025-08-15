@@ -48,13 +48,17 @@ export type ContractEvent =
   | UserRemovedFromBlacklistEvent
   | FeesUpdatedEvent;
 
-export interface EventHandlerResult {
-  success: boolean;
-  error?: string;
+export interface ContractEventData {
+	event: EventType;
+	transactionHash: string;
+	blockNumber: number;
+	returnValues: Record<string, any>;
+	[key: string]: any;
 }
 
-export interface EventListenerConfig {
-  fromBlock?: number | 'latest';
-  batchSize?: number;
-  pollingInterval?: number;
+export type EthEventHandler = (eventData: ContractEventData) => Promise<void> | void;
+
+export type BlockRange = {
+	fromBlock: number;
+	toBlock: number;
 }

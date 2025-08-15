@@ -1,15 +1,13 @@
 services:
   ntf-db:
-    image: postgres:17.5
     container_name: ntf-db
-    ports:
-      - "5430:5432"
+    image: mongo:latest
     environment:
-      POSTGRES_USER: ntf_user
-      POSTGRES_PASSWORD: ntf_password
-      POSTGRES_DB: ntf_db
+      MONGO_INITDB_DATABASE: ntf_db
+    ports:
+      - "27017:27017"
     volumes:
-      - ntf_db_data:/var/lib/postgresql/data
+      - ntf_db_data:/data/
 volumes:
   ntf_db_data:
     driver: local
