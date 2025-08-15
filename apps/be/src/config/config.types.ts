@@ -18,6 +18,8 @@ export type EthConfig = {
 	rpcUrl: string;
 	wsUrl: string;
 	contractAddress: string;
+	startBlock: number;
+	rpcBlockLimit: number;
 }
 
 export type AppConfig = {

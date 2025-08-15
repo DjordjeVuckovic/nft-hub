@@ -133,8 +133,7 @@ export function useEthContract(): UseNftHubReturn {
     } catch (err: any) {
       console.error('Registration error:', err)
 
-      let errorMessage = 'Registration failed. Please try again.'
-			errorMessage = buildRegisterErrMsg(err, errorMessage);
+			const errorMessage = buildErrMsg(err, 'Registration failed. Please try again.');
 
 			return { success: false, error: errorMessage }
     } finally {
@@ -177,7 +176,7 @@ export function useEthContract(): UseNftHubReturn {
     } catch (err: any) {
       console.error('Minting error:', err)
 
-			let errorMessage = buildMintErrMsg(err);
+			let errorMessage = buildErrMsg(err, 'Minting failed. Please try again.');
 
 			return { success: false, error: errorMessage }
     }
@@ -190,7 +189,7 @@ export function useEthContract(): UseNftHubReturn {
     ])
   }, [checkRegistrationStatus, fetchFees])
 
-	function buildRegisterErrMsg(err: any, errorMessage: string) {
+	function buildErrMsg(err: any, errorMessage: string = 'An error occurred') {
 		switch (err.code) {
 			case 'ACTION_REJECTED':
 				errorMessage = 'Transaction was rejected by user'
@@ -209,25 +208,6 @@ export function useEthContract(): UseNftHubReturn {
 					errorMessage = err.message
 				}
 				break
-		}
-		return errorMessage;
-	}
-
-	function buildMintErrMsg(err: any) {
-		let errorMessage = 'Minting failed. Please try again.'
-
-		if (err.code === 'ACTION_REJECTED') {
-			errorMessage = 'Transaction was rejected by user'
-		} else if (err.code === 'INSUFFICIENT_FUNDS') {
-			errorMessage = 'Insufficient funds to complete minting'
-		} else if (err.message?.includes('not registered')) {
-			errorMessage = 'You must be registered to mint NFTs'
-		} else if (err.message?.includes('blacklisted')) {
-			errorMessage = 'Address is blacklisted'
-		} else if (err.reason) {
-			errorMessage = err.reason
-		} else if (err.message) {
-			errorMessage = err.message
 		}
 		return errorMessage;
 	}

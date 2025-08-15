@@ -1,33 +1,40 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, Inject, forwardRef } from '@nestjs/common';
 import type {
   ContractEvent,
   EventType
 } from './events.types';
-import { EthEventListener, type ContractEventData, type BlockNumberCursor } from '../eth/eth-event.listener';
+import { EthEventListener, type ContractEventData } from '../eth/eth-event.listener';
+
+// Custom serializer to handle BigInt values
+function serializeEventData(obj: any): any {
+  return JSON.parse(JSON.stringify(obj, (key, value) =>
+    typeof value === 'bigint' ? value.toString() : value
+  ));
+}
 
 @Injectable()
 export class EventsService implements OnModuleInit {
   private readonly logger = new Logger(EventsService.name);
 
-  constructor(private readonly eventListener: EthEventListener) {}
+  constructor(@Inject(forwardRef(() => EthEventListener)) private readonly eventListener: EthEventListener) {}
 
   async onModuleInit() {
-    this.startListening('start')
+    this.startListening()
   }
 
-	startListening(fromBlock: BlockNumberCursor = 'latest') {
-		this.eventListener.listenToAll(this.handleContractEvent, fromBlock);
+	startListening() {
+		this.eventListener.startEventListening();
 
-    this.logger.log(`Started listening for contract events from block ${fromBlock}`);
+    this.logger.log(`Started listening for contract events`);
 		this.logger.log('EthEventListener is listening:', this.eventListener.isListening);
   }
 
-  private async handleContractEvent(eventData: ContractEventData): Promise<void> {
+  public async handleContractEvent(eventData: ContractEventData): Promise<void> {
     const eventType = eventData.event as EventType;
 
     try {
       this.logger.log(`Processing ${eventType} event from block ${eventData.blockNumber}`);
-			this.logger.log(`Event data: ${JSON.stringify(eventData, null, 2)}`);
+			this.logger.log(`Event data: ${JSON.stringify(serializeEventData(eventData), null, 2)}`);
 
       switch (eventType) {
         case 'UserRegistered':
@@ -55,8 +62,8 @@ export class EventsService implements OnModuleInit {
   }
 
   private async handleUserRegistered(eventData: ContractEventData): Promise<void> {
-    const {user} = eventData.returnValues;
-    const timestamp = Number(eventData.args[1]);
+    const user = eventData.returnValues[0];
+    const timestamp = Number(eventData.returnValues[1]);
 
     this.logger.log(`User registered: ${user} at ${new Date(timestamp * 1000).toISOString()}`);
 
@@ -65,10 +72,10 @@ export class EventsService implements OnModuleInit {
   }
 
   private async handleNFTMinted(eventData: ContractEventData): Promise<void> {
-    const to = eventData.args[0];
-    const tokenId = eventData.args[1].toString();
-    const metadataURI = eventData.args[2];
-    const timestamp = Number(eventData.args[3]);
+    const to = eventData.returnValues[0];
+    const tokenId = eventData.returnValues[1].toString();
+    const metadataURI = eventData.returnValues[2];
+    const timestamp = Number(eventData.returnValues[3]);
 
     this.logger.log(`NFT minted: tokenId=${tokenId}, to=${to}, metadataURI=${metadataURI}`);
 
@@ -77,8 +84,8 @@ export class EventsService implements OnModuleInit {
   }
 
   private async handleUserBlacklisted(eventData: ContractEventData): Promise<void> {
-    const user = eventData.args[0];
-    const timestamp = Number(eventData.args[1]);
+    const user = eventData.returnValues[0];
+    const timestamp = Number(eventData.returnValues[1]);
 
     this.logger.log(`User blacklisted: ${user} at ${new Date(timestamp * 1000).toISOString()}`);
 
@@ -87,8 +94,8 @@ export class EventsService implements OnModuleInit {
   }
 
   private async handleUserRemovedFromBlacklist(eventData: ContractEventData): Promise<void> {
-    const user = eventData.args[0];
-    const timestamp = Number(eventData.args[1]);
+    const user = eventData.returnValues[0];
+    const timestamp = Number(eventData.returnValues[1]);
 
     this.logger.log(`User removed from blacklist: ${user} at ${new Date(timestamp * 1000).toISOString()}`);
 
@@ -97,9 +104,9 @@ export class EventsService implements OnModuleInit {
   }
 
   private async handleFeesUpdated(eventData: ContractEventData): Promise<void> {
-    const registrationFee = eventData.args[0].toString();
-    const mintingFee = eventData.args[1].toString();
-    const timestamp = Number(eventData.args[2]);
+    const registrationFee = eventData.returnValues[0].toString();
+    const mintingFee = eventData.returnValues[1].toString();
+    const timestamp = Number(eventData.returnValues[2]);
 
     this.logger.log(`Fees updated: registration=${registrationFee}, minting=${mintingFee}`);
 
