@@ -2,17 +2,29 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IpfsService } from './ipfs.service';
 
 describe('IpfsService', () => {
-  let service: IpfsService;
+	let service: IpfsService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [IpfsService],
-    }).compile();
+	const mockIpfsConfig = {
+		pinataJwt: 'test-jwt',
+		gatewayUrl: 'https://test-gateway.mypinata.cloud',
+		groupId: 'test-group-id',
+	};
 
-    service = module.get<IpfsService>(IpfsService);
-  });
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [
+				IpfsService,
+				{
+					provide: 'IPFS_CONFIG',
+					useValue: mockIpfsConfig,
+				},
+			],
+		}).compile();
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+		service = module.get<IpfsService>(IpfsService);
+	});
+
+	it('should be defined', () => {
+		expect(service).toBeDefined();
+	});
 });

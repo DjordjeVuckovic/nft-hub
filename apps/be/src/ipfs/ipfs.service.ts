@@ -1,8 +1,8 @@
-import {Injectable, Logger, OnModuleInit, Inject} from '@nestjs/common';
-import {PinataSDK} from 'pinata';
-import type {IpfsConfig} from '../config/config.types';
-import {IpfsUploadResult, NftMetadata, FileUploadMetadata} from "./nft-metadata.types";
-import {PinataUploadBuilder} from './pinata.builder';
+import { Injectable, Logger, OnModuleInit, Inject } from '@nestjs/common';
+import { PinataSDK } from 'pinata';
+import type { IpfsConfig } from '../config/config.types';
+import { IpfsUploadResult, NftMetadata, FileUploadMetadata } from './nft-metadata.types';
+import { PinataUploadBuilder } from './pinata.builder';
 
 const IPFS_PROTOCOL_PREFIX = 'ipfs://';
 
@@ -11,8 +11,7 @@ export class IpfsService implements OnModuleInit {
 	private readonly logger = new Logger(IpfsService.name);
 	private pinata: PinataSDK;
 
-	constructor(@Inject('IPFS_CONFIG') private readonly config: IpfsConfig) {
-	}
+	constructor(@Inject('IPFS_CONFIG') private readonly config: IpfsConfig) {}
 
 	async onModuleInit() {
 		try {
@@ -36,10 +35,7 @@ export class IpfsService implements OnModuleInit {
 				type: 'application/octet-stream',
 			});
 
-			const upload = await new PinataUploadBuilder(this.pinata)
-				.file(file)
-				.group(this.config.groupId)
-				.upload();
+			const upload = await new PinataUploadBuilder(this.pinata).file(file).group(this.config.groupId).upload();
 
 			const cid = upload.cid;
 
@@ -47,7 +43,7 @@ export class IpfsService implements OnModuleInit {
 
 			return {
 				cid: cid,
-				size: fileBuffer.length
+				size: fileBuffer.length,
 			};
 		} catch (error) {
 			this.logger.error('Failed to upload file to Pinata:', error);
@@ -59,11 +55,7 @@ export class IpfsService implements OnModuleInit {
 		try {
 			this.logger.log('Uploading JSON data to Pinata');
 
-			const upload = await new PinataUploadBuilder(this.pinata)
-				.json(jsonData)
-				.metadata(metadata)
-				.group(this.config.groupId)
-				.upload();
+			const upload = await new PinataUploadBuilder(this.pinata).json(jsonData).metadata(metadata).group(this.config.groupId).upload();
 
 			const cid = upload.cid;
 			const jsonString = JSON.stringify(jsonData, null, 2);
@@ -72,7 +64,7 @@ export class IpfsService implements OnModuleInit {
 
 			return {
 				cid: cid,
-				size: Buffer.from(jsonString, 'utf-8').length
+				size: Buffer.from(jsonString, 'utf-8').length,
 			};
 		} catch (error) {
 			this.logger.error('Failed to upload JSON to Pinata:', error);
@@ -80,12 +72,7 @@ export class IpfsService implements OnModuleInit {
 		}
 	}
 
-
-	async uploadFileWithMetadata(
-		fileBuffer: Buffer,
-		filename?: string,
-		metadata?: FileUploadMetadata
-	): Promise<IpfsUploadResult> {
+	async uploadFileWithMetadata(fileBuffer: Buffer, filename?: string, metadata?: FileUploadMetadata): Promise<IpfsUploadResult> {
 		try {
 			this.logger.log(`Uploading file to Pinata${filename ? ` (${filename})` : ''}`);
 
@@ -93,18 +80,14 @@ export class IpfsService implements OnModuleInit {
 				type: 'application/octet-stream',
 			});
 
-			const upload = await new PinataUploadBuilder(this.pinata)
-				.file(file)
-				.metadata(metadata)
-				.group(this.config.groupId)
-				.upload();
+			const upload = await new PinataUploadBuilder(this.pinata).file(file).metadata(metadata).group(this.config.groupId).upload();
 
 			const cid = upload.cid;
 			this.logger.debug(`File uploaded successfully to Pinata: ${cid}`);
 
 			return {
 				cid: cid,
-				size: fileBuffer.length
+				size: fileBuffer.length,
 			};
 		} catch (error) {
 			this.logger.error('Failed to upload file to Pinata:', error);
@@ -127,10 +110,9 @@ export class IpfsService implements OnModuleInit {
 			this.logger.error(`Failed to fetch metadata for URI ${uri}:`, error);
 			throw new Error(`Failed to fetch metadata from IPFS: ${error.message}`);
 		}
-
 	}
 
-	async fetchImage(cidOrUri: string): Promise<{blob: Blob, contentType: string}> {
+	async fetchImage(cidOrUri: string): Promise<{ blob: Blob; contentType: string }> {
 		try {
 			let ipfsHash: string;
 
@@ -147,7 +129,7 @@ export class IpfsService implements OnModuleInit {
 				throw new Error(`Content is not an image. ContentType: ${contentType}`);
 			}
 
-			if(!data || !(data instanceof Blob)) {
+			if (!data || !(data instanceof Blob)) {
 				throw new Error(`Invalid image data received for CID: ${ipfsHash}`);
 			}
 

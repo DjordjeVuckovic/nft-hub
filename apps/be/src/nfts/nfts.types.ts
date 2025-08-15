@@ -7,7 +7,7 @@ type NFTMetadata = {
 	external_url?: string;
 	background_color?: string;
 	[key: string]: any;
-}
+};
 
 type NFT = {
 	index: number;
@@ -16,7 +16,7 @@ type NFT = {
 	tokenURI: string;
 	metadata?: NFTMetadata | null;
 	isMinted: boolean;
-}
+};
 
 type CollectionInfo = {
 	contractAddress: string;
@@ -26,16 +26,11 @@ type CollectionInfo = {
 	nextTokenId: string;
 	registrationFee: string;
 	mintingFee: string;
-}
+};
 
 type NFTCollectionResponse = {
 	nfts: NFT[];
 	collectionInfo: CollectionInfo;
-}
+};
 
-export type {
-	NFTMetadata,
-	NFT,
-	CollectionInfo,
-	NFTCollectionResponse
-}
+export type { NFTMetadata, NFT, CollectionInfo, NFTCollectionResponse };

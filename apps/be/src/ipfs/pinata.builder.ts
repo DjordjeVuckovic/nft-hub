@@ -1,5 +1,5 @@
-import {PinataSDK} from 'pinata';
-import {FileUploadMetadata} from './nft-metadata.types';
+import { PinataSDK } from 'pinata';
+import { FileUploadMetadata } from './nft-metadata.types';
 
 export class PinataUploadBuilder {
 	private uploadChain: any;

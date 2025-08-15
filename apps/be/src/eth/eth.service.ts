@@ -1,9 +1,9 @@
-import {Injectable, Inject, OnModuleInit, Logger} from '@nestjs/common';
+import { Injectable, Inject, OnModuleInit, Logger } from '@nestjs/common';
 import { ethers } from 'ethers';
 import { CONFIG_PROVIDER } from '../config/config.provider';
 import type { AppConfig } from '../config/config.types';
-import {BasicCollectionInfo, ContractNFT} from "./eth.types";
-import {EthContractFactory} from "./eth.factory";
+import { BasicCollectionInfo, ContractNFT } from './eth.types';
+import { EthContractFactory } from './eth.factory';
 
 @Injectable()
 export class EthService {
@@ -24,7 +24,7 @@ export class EthService {
 				this.contract.getTotalSupply(),
 				this.contract.nextTokenId(),
 				this.contract.registrationFee(),
-				this.contract.mintingFee()
+				this.contract.mintingFee(),
 			]);
 
 			return {
@@ -34,7 +34,7 @@ export class EthService {
 				totalSupply: totalSupply.toString(),
 				nextTokenId: nextTokenId.toString(),
 				registrationFee: registrationFee.toString(),
-				mintingFee: mintingFee.toString()
+				mintingFee: mintingFee.toString(),
 			};
 		} catch (error) {
 			throw new Error(`Failed to get collection info: ${error.message}`);
@@ -56,7 +56,7 @@ export class EthService {
 				const batch: ContractNFT[] = [];
 
 				for (let tokenId = i; tokenId < i + batchSize && tokenId <= Number(totalSupply); tokenId++) {
-					const minted = await this.getMintedNFTData(tokenId)
+					const minted = await this.getMintedNFTData(tokenId);
 
 					if (minted) {
 						batch.push(minted);
@@ -76,7 +76,7 @@ export class EthService {
 
 					// Add delay between batches to respect rate limits
 					if (i + batchSize <= Number(totalSupply)) {
-						await new Promise(resolve => setTimeout(resolve, 200));
+						await new Promise((resolve) => setTimeout(resolve, 200));
 					}
 				} catch (batchError) {
 					this.logger.error(`Batch failed for tokens ${i}-${Math.min(i + batchSize - 1, Number(totalSupply))}:`, batchError);
@@ -92,28 +92,23 @@ export class EthService {
 
 	private async getMintedNFTData(tokenId: number): Promise<ContractNFT | null> {
 		try {
-			const [owner, tokenURI] = await Promise.all([
-				this.contract.ownerOf(tokenId),
-				this.contract.tokenURI(tokenId)
-			]);
+			const [owner, tokenURI] = await Promise.all([this.contract.ownerOf(tokenId), this.contract.tokenURI(tokenId)]);
 
 			return {
 				tokenId: tokenId.toString(),
 				owner,
-				tokenURI
+				tokenURI,
 			};
 		} catch (error) {
 			if (error.message?.includes('Too Many Requests')) {
 				// Wait and retry once
-				await new Promise(resolve => setTimeout(resolve, 5_000));
+				await new Promise((resolve) => setTimeout(resolve, 5_000));
 				return this.getMintedNFTData(tokenId);
 			}
 			this.logger.warn(`Token ${tokenId} does not exist or failed:`, error.message);
 			return null;
 		}
 	}
-
-
 
 	async getPredefinedMetadataURIs(): Promise<string[]> {
 		try {
@@ -131,5 +126,4 @@ export class EthService {
 			throw new Error(`Failed to get current block number: ${error.message}`);
 		}
 	}
-
 }

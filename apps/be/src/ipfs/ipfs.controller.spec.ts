@@ -1,18 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { IpfsController } from './ipfs.controller';
+import { IpfsService } from './ipfs.service';
 
 describe('IpfsController', () => {
-  let controller: IpfsController;
+	let controller: IpfsController;
+	let ipfsService: IpfsService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [IpfsController],
-    }).compile();
+	const mockIpfsService = {
+		uploadFile: jest.fn(),
+		uploadJson: jest.fn(),
+		uploadFileWithMetadata: jest.fn(),
+	};
 
-    controller = module.get<IpfsController>(IpfsController);
-  });
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			controllers: [IpfsController],
+			providers: [
+				{
+					provide: IpfsService,
+					useValue: mockIpfsService,
+				},
+			],
+		})
+			.overrideGuard(require('../auth/api-key.guard').ApiKeyGuard)
+			.useValue({ canActivate: () => true })
+			.compile();
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+		controller = module.get<IpfsController>(IpfsController);
+		ipfsService = module.get<IpfsService>(IpfsService);
+	});
+
+	it('should be defined', () => {
+		expect(controller).toBeDefined();
+	});
 });

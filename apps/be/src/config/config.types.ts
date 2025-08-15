@@ -1,26 +1,25 @@
 export type DbConfig = {
 	uri: string;
-	options: {}
-}
+	options: {};
+};
 
 export type AuthConfig = {
 	jwtSecret: string;
 	apiKey: string;
-}
+};
 
 export type IpfsConfig = {
 	gatewayUrl: string;
 	pinataJwt: string;
 	groupId?: string;
-}
+};
 
 export type EthConfig = {
 	rpcUrl: string;
-	wsUrl: string;
 	contractAddress: string;
 	startBlock: number;
 	rpcBlockLimit: number;
-}
+};
 
 export type AppConfig = {
 	port: number;
@@ -28,4 +27,4 @@ export type AppConfig = {
 	ipfsConfig: IpfsConfig;
 	authConfig: AuthConfig;
 	ethConfig: EthConfig;
-}
+};

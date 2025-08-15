@@ -9,20 +9,19 @@ import {
 	HttpCode,
 	UseGuards,
 } from '@nestjs/common';
-import {FileInterceptor} from '@nestjs/platform-express';
-import {IpfsService} from './ipfs.service';
-import {ApiKeyGuard} from '../auth/api-key.guard';
-import type {IpfsUploadResult, NftMetadata, FileUploadMetadata} from './nft-metadata.types';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { IpfsService } from './ipfs.service';
+import { ApiKeyGuard } from '../auth/api-key.guard';
+import type { IpfsUploadResult, NftMetadata, FileUploadMetadata } from './nft-metadata.types';
 
 type UploadResponse = {
 	data: IpfsUploadResult;
-}
+};
 
 @Controller('api/v1/ipfs')
 @UseGuards(ApiKeyGuard)
 export class IpfsController {
-	constructor(private readonly ipfsService: IpfsService) {
-	}
+	constructor(private readonly ipfsService: IpfsService) {}
 
 	@Post('upload')
 	@HttpCode(HttpStatus.OK)
@@ -53,11 +52,10 @@ export class IpfsController {
 		}
 
 		try {
-
 			const uploadMetadata: FileUploadMetadata = {
 				name: `${metadataRequest.name} - NFT Metadata`,
 				category: 'nft-metadata',
-				project: metadataRequest.name
+				project: metadataRequest.name,
 			};
 
 			const result = await this.ipfsService.uploadJson(metadataRequest, uploadMetadata);
@@ -75,25 +73,22 @@ export class IpfsController {
 	@UseInterceptors(FileInterceptor('file'))
 	async uploadFileWithMetadata(
 		@UploadedFile() file: Express.Multer.File,
-		@Body() metadata: {
+		@Body()
+		metadata: {
 			name?: string;
 			category?: string;
 			creator?: string;
 			project?: string;
 			tags?: string;
 			customAttributes?: string;
-		}
+		},
 	): Promise<UploadResponse> {
 		this.validateFile(file);
 
 		try {
 			const parseMetadata = this.createMetadata(metadata, file.originalname);
 
-			const result = await this.ipfsService.uploadFileWithMetadata(
-				file.buffer,
-				file.originalname,
-				parseMetadata
-			);
+			const result = await this.ipfsService.uploadFileWithMetadata(file.buffer, file.originalname, parseMetadata);
 
 			return {
 				data: result,
@@ -120,35 +115,33 @@ export class IpfsController {
 		];
 
 		if (!allowedMimeTypes.includes(file.mimetype)) {
-			throw new BadRequestException(
-				`File type ${file.mimetype} not allowed. Allowed types: ${allowedMimeTypes.join(', ')}`
-			);
+			throw new BadRequestException(`File type ${file.mimetype} not allowed. Allowed types: ${allowedMimeTypes.join(', ')}`);
 		}
 
 		const maxSize = 10 * 1024 * 1024;
 		if (file.size > maxSize) {
-			throw new BadRequestException(
-				`File size too large. Maximum allowed size: ${maxSize / (1024 * 1024)}MB`
-			);
+			throw new BadRequestException(`File size too large. Maximum allowed size: ${maxSize / (1024 * 1024)}MB`);
 		}
 	}
 
-	private createMetadata(metadataDto: {
-		name?: string;
-		category?: string;
-		creator?: string;
-		project?: string;
-		tags?: string;
-		customAttributes?: string;
-	}, fallbackName?: string): FileUploadMetadata {
+	private createMetadata(
+		metadataDto: {
+			name?: string;
+			category?: string;
+			creator?: string;
+			project?: string;
+			tags?: string;
+			customAttributes?: string;
+		},
+		fallbackName?: string,
+	): FileUploadMetadata {
 		return {
 			name: metadataDto.name || fallbackName,
 			category: metadataDto.category,
 			creator: metadataDto.creator,
 			project: metadataDto.project,
-			tags: metadataDto.tags ? metadataDto.tags.split(',').map(tag => tag.trim()) : undefined,
+			tags: metadataDto.tags ? metadataDto.tags.split(',').map((tag) => tag.trim()) : undefined,
 			customAttributes: metadataDto.customAttributes ? JSON.parse(metadataDto.customAttributes) : undefined,
 		};
 	}
-
 }

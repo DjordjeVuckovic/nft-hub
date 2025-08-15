@@ -4,44 +4,48 @@ import type { EventType } from './events.types';
 
 @Schema({ timestamps: true, strict: false })
 export class ContractEvent extends Document {
-  @Prop({ required: true, enum: ['UserRegistered', 'NFTMinted', 'UserBlacklisted', 'UserRemovedFromBlacklist', 'FeesUpdated'] })
-  eventType: EventType;
+	@Prop({
+		required: true,
+		type: String,
+		enum: ['UserRegistered', 'NFTMinted', 'UserBlacklisted', 'UserRemovedFromBlacklist', 'FeesUpdated'],
+	})
+	eventType: EventType;
 
-  @Prop({ required: true })
-  transactionHash: string;
+	@Prop({ required: true })
+	transactionHash: string;
 
-  @Prop({ required: true })
-  blockNumber: number;
+	@Prop({ required: true })
+	blockNumber: number;
 
-  @Prop({ required: true, default: 0 })
-  logIndex: number;
+	@Prop({ required: true, default: 0 })
+	logIndex: number;
 
-  @Prop({ required: true })
-  timestamp: number;
+	@Prop({ required: true })
+	timestamp: number;
 
-  @Prop() // UserRegistered, UserBlacklisted, UserRemovedFromBlacklist
-  user?: string;
+	@Prop() // UserRegistered, UserBlacklisted, UserRemovedFromBlacklist
+	user?: string;
 
-  @Prop()
-  to?: string;
+	@Prop()
+	to?: string;
 
-  @Prop()
-  tokenId?: string;
+	@Prop()
+	tokenId?: string;
 
-  @Prop()
-  metadataURI?: string;
+	@Prop()
+	metadataURI?: string;
 
-  @Prop() // UserBlacklisted, UserRemovedFromBlacklist
-  action?: 'blacklisted' | 'removed';
+	@Prop() // UserBlacklisted, UserRemovedFromBlacklist
+	action?: 'blacklisted' | 'removed';
 
-  @Prop() // FeesUpdated
-  registrationFee?: string;
+	@Prop() // FeesUpdated
+	registrationFee?: string;
 
-  @Prop() // FeesUpdated
-  mintingFee?: string;
+	@Prop() // FeesUpdated
+	mintingFee?: string;
 
-  @Prop({ type: Object })
-  rawData?: Record<string, any>;
+	@Prop({ type: Object })
+	rawData?: Record<string, any>;
 }
 
 export const ContractEventSchema = SchemaFactory.createForClass(ContractEvent);

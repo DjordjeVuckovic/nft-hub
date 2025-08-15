@@ -1,10 +1,10 @@
-import {Inject, Injectable, Logger, Param} from '@nestjs/common';
-import {CACHE_MANAGER} from "@nestjs/cache-manager";
-import type {Cache} from 'cache-manager';
-import {EthService} from '../eth/eth.service';
-import {IpfsService} from '../ipfs/ipfs.service';
-import {NFT, NFTCollectionResponse} from "./nfts.types";
-import {ContractNFT} from "../eth/eth.types";
+import { Inject, Injectable, Logger, Param } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
+import { EthService } from '../eth/eth.service';
+import { IpfsService } from '../ipfs/ipfs.service';
+import { NFT, NFTCollectionResponse } from './nfts.types';
+import { ContractNFT } from '../eth/eth.types';
 
 const CACHE_ALL_TTL = 30 * 60 * 1000;
 
@@ -15,9 +15,8 @@ export class NftsService {
 	constructor(
 		@Inject(CACHE_MANAGER) private cacheManager: Cache,
 		private ethService: EthService,
-		private ipfsService: IpfsService
-	) {
-	}
+		private ipfsService: IpfsService,
+	) {}
 
 	async getAll(useCache: boolean): Promise<NFTCollectionResponse> {
 		const cacheKey = 'nft:all';
@@ -32,7 +31,7 @@ export class NftsService {
 			const [collectionInfo, predefinedURIs, mintedNFTs] = await Promise.all([
 				this.ethService.getCollectionInfo(),
 				this.ethService.getPredefinedMetadataURIs(),
-				this.ethService.getAllMintedNFTs()
+				this.ethService.getAllMintedNFTs(),
 			]);
 
 			const nfts: NFT[] = [];
@@ -61,13 +60,13 @@ export class NftsService {
 					owner: mintedNFT?.owner,
 					tokenURI: metadataURI,
 					metadata,
-					isMinted: !!mintedNFT
+					isMinted: !!mintedNFT,
 				});
 			}
 
 			const result: NFTCollectionResponse = {
 				nfts: nfts,
-				collectionInfo
+				collectionInfo,
 			};
 
 			await this.cacheManager.set(cacheKey, result, CACHE_ALL_TTL);

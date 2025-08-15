@@ -1,10 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 
+export const msg = 'NFT Hub API is running!';
+
 @Controller()
 export class AppController {
-
-  @Get()
-  getHello(): string {
-    return `NFT Hub API is running!`;
-  }
+	@Get()
+	getHello(): string {
+		return msg;
+	}
 }

@@ -1,10 +1,10 @@
-import {Inject, Injectable, Logger, OnModuleDestroy} from '@nestjs/common';
-import {CONFIG_PROVIDER} from '../config/config.provider';
-import type {AppConfig} from '../config/config.types';
-import {BlockRange, EventType} from "../events/events.types";
-import {Contract, ethers} from 'ethers';
-import {EthContractFactory} from "./eth.factory";
-import {EthEventHandler, ContractEventData} from "../events/events.types";
+import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { CONFIG_PROVIDER } from '../config/config.provider';
+import type { AppConfig } from '../config/config.types';
+import { BlockRange, EventType } from '../events/events.types';
+import { Contract, ethers } from 'ethers';
+import { EthContractFactory } from './eth.factory';
+import { EthEventHandler, ContractEventData } from '../events/events.types';
 
 @Injectable()
 export class EthContractListener implements OnModuleDestroy {
@@ -16,9 +16,7 @@ export class EthContractListener implements OnModuleDestroy {
 
 	private readonly provider: ethers.JsonRpcProvider;
 
-	constructor(
-		@Inject(CONFIG_PROVIDER) private config: AppConfig
-	) {
+	constructor(@Inject(CONFIG_PROVIDER) private config: AppConfig) {
 		try {
 			const rpcUrl = this.config.ethConfig.rpcUrl;
 			this.provider = new ethers.JsonRpcProvider(rpcUrl);
@@ -31,7 +29,6 @@ export class EthContractListener implements OnModuleDestroy {
 			throw error;
 		}
 	}
-
 
 	public async startEventListening(realTimeHandlers: Map<string, EthEventHandler>, pastEventHandler?: EthEventHandler) {
 		if (this.isListening) {
@@ -47,10 +44,13 @@ export class EthContractListener implements OnModuleDestroy {
 
 			this.logger.log(`Starting event sync from block ${startBlock} to ${currentBlock}`);
 
-			this.fetchPastEvents({
-				fromBlock: startBlock,
-				toBlock: currentBlock
-			}, pastEventHandler).then();
+			this.fetchPastEvents(
+				{
+					fromBlock: startBlock,
+					toBlock: currentBlock,
+				},
+				pastEventHandler,
+			).then();
 
 			this.listenToRealtimeEvents(realTimeHandlers).then();
 
@@ -62,8 +62,8 @@ export class EthContractListener implements OnModuleDestroy {
 		}
 	}
 
-	private async fetchPastEvents({fromBlock, toBlock}: BlockRange, eventHandler?: EthEventHandler) {
-		if(!eventHandler) {
+	private async fetchPastEvents({ fromBlock, toBlock }: BlockRange, eventHandler?: EthEventHandler) {
+		if (!eventHandler) {
 			this.logger.log('No past event handler provided, skipping past events sync');
 			return;
 		}
@@ -89,7 +89,7 @@ export class EthContractListener implements OnModuleDestroy {
 				const filter = {
 					address: this.config.ethConfig.contractAddress,
 					fromBlock: currentFromBlock,
-					toBlock: currentToBlock
+					toBlock: currentToBlock,
 				};
 
 				const logs = await this.provider.getLogs(filter);
@@ -98,20 +98,18 @@ export class EthContractListener implements OnModuleDestroy {
 					try {
 						const parsedLog = this.contract.interface.parseLog({
 							topics: log.topics as string[],
-							data: log.data
+							data: log.data,
 						});
 
 						if (parsedLog) {
-
 							const contractEventData: ContractEventData = {
 								event: parsedLog.name as EventType,
 								transactionHash: log.transactionHash,
 								blockNumber: log.blockNumber,
-								returnValues: parsedLog.args
+								returnValues: parsedLog.args,
 							};
 
-							eventHandler(contractEventData)
-
+							eventHandler(contractEventData);
 						} else {
 							this.logger.warn(`Failed to parse log: ${log.transactionHash} at block ${log.blockNumber}`);
 						}
@@ -126,8 +124,7 @@ export class EthContractListener implements OnModuleDestroy {
 
 				currentFromBlock = currentToBlock + 1;
 
-				await new Promise(resolve => setTimeout(resolve, 100));
-
+				await new Promise((resolve) => setTimeout(resolve, 100));
 			} catch (error) {
 				this.logger.error(`Failed to fetch events for blocks ${currentFromBlock} - ${currentToBlock}:`, error);
 				throw error;
@@ -142,23 +139,19 @@ export class EthContractListener implements OnModuleDestroy {
 
 		this.eventNames = Array.from(realTimeHandlers.keys()) as EventType[];
 		try {
-
 			for (const [eventName, handler] of realTimeHandlers.entries()) {
-
 				try {
 					this.contract.on(eventName, async (...args) => {
-
 						const eventPayload = args[args.length - 1];
 
 						const contractEventData: ContractEventData = {
 							event: eventName as EventType,
 							transactionHash: eventPayload.log.transactionHash,
 							blockNumber: eventPayload.log.blockNumber,
-							returnValues: eventPayload.args
+							returnValues: eventPayload.args,
 						};
 
 						await handler(contractEventData);
-
 					});
 
 					this.logger.debug(`Registered listener for event: ${eventName}`);
@@ -166,7 +159,6 @@ export class EthContractListener implements OnModuleDestroy {
 					this.logger.warn(`Failed to register listener for ${eventName}:`, eventError);
 				}
 			}
-
 		} catch (error) {
 			this.logger.error('Failed to set up real-time event listeners:', error);
 			throw error;
@@ -188,6 +180,5 @@ export class EthContractListener implements OnModuleDestroy {
 				this.logger.error(`Failed to remove listener for ${eventName}:`, error);
 			}
 		}
-
 	}
 }

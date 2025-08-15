@@ -1,21 +1,13 @@
-import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
-import type {ContractEvent, ContractEventData, EthEventHandler, EventType} from './events.types';
-import {EthContractListener} from '../eth/eth-contract.listener';
-import {EventsRepository} from './events.repository';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import type { ContractEvent, ContractEventData, EthEventHandler, EventType } from './events.types';
+import { EthContractListener } from '../eth/eth-contract.listener';
+import { EventsRepository } from './events.repository';
 
 function serializeEventData(obj: any): any {
-	return JSON.parse(JSON.stringify(obj, (key, value) =>
-		typeof value === 'bigint' ? value.toString() : value
-	));
+	return JSON.parse(JSON.stringify(obj, (key, value) => (typeof value === 'bigint' ? value.toString() : value)));
 }
 
-const eventsToListen: EventType[] = [
-	'UserRegistered',
-	'NFTMinted',
-	'UserBlacklisted',
-	'UserRemovedFromBlacklist',
-	'FeesUpdated'
-];
+const eventsToListen: EventType[] = ['UserRegistered', 'NFTMinted', 'UserBlacklisted', 'UserRemovedFromBlacklist', 'FeesUpdated'];
 
 @Injectable()
 export class EventsListener implements OnModuleInit {
@@ -28,14 +20,13 @@ export class EventsListener implements OnModuleInit {
 	) {
 		this.handlers = new Map<EventType, EthEventHandler>();
 
-		eventsToListen.forEach(eventType => {
+		eventsToListen.forEach((eventType) => {
 			this.handlers.set(eventType, this.handleContractEvent.bind(this));
 		});
-
 	}
 
 	async onModuleInit() {
-		this.startListening()
+		this.startListening();
 	}
 
 	startListening() {

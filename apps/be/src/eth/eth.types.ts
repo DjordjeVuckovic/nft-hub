@@ -2,7 +2,7 @@ export type ContractNFT = {
 	tokenId: string;
 	owner: string;
 	tokenURI: string;
-}
+};
 
 export interface BasicCollectionInfo {
 	contractAddress: string;

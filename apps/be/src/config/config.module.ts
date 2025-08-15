@@ -3,7 +3,7 @@ import { ConfigProvider } from './config.provider';
 
 @Global()
 @Module({
-  providers: [ConfigProvider],
-  exports: [ConfigProvider],
+	providers: [ConfigProvider],
+	exports: [ConfigProvider],
 })
 export class ConfigModule {}
