@@ -1,7 +1,12 @@
 # NFT Hub
 
 A comprehensive Web3 application for NFT registration, minting, and management on the blockchain. NFT Hub provides a complete ecosystem including smart contracts, backend API services, and a modern React frontend for seamless NFT operations.
-
+## Screenshots
+![Home](./docs/imgs/home-page.png)
+![Home Wallet Connected](./docs/imgs/home-page-wallet-connected.png)
+![Nft Gallery](./docs/imgs/nft-collection-page.png)
+![Nft Gallery Scroll](./docs/imgs/nft-collection-page-scroll.png)
+![Light Theme](./docs/imgs/light-mode.png)
 ## Architecture
 
 This monorepo contains three interconnected components:
